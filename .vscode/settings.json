@@ -1,0 +1,6 @@
+{
+    "verilog.linting.linter": "verilator",
+    "verilog.linting.verilator.arguments": "--timing -Wall",
+    "verilog.linting.verilator.runAtFileLocation": false,
+    "verilog.linting.verilator.useWSL": true
+}
