@@ -9,7 +9,7 @@ module tb_top;
   logic clk;
   logic rst_n;
 
-  apb_if apb_intf (clk, rst_n);
+  apb_interface apb_intf (clk, rst_n);
   bus_interface bus_intf (clk, rst_n);
 
   clk_rst_gen #(
@@ -48,8 +48,9 @@ module tb_top;
     .bus_slverr (bus_intf.bus_slverr  )
   );
 
-  initial begin 
-    uvm_config_db#(virtual bus_interface)::set(uvm_root::get(), "*", "intf", bus_intf);
+  initial begin
+    uvm_config_db#(virtual apb_interface)::set(uvm_root::get(), "*", "apb_intf", apb_intf);
+    uvm_config_db#(virtual bus_interface)::set(uvm_root::get(), "*", "bus_intf", bus_intf);
     $dumpfile("wave.vcd"); $dumpvars;
   end
 

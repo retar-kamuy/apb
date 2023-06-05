@@ -12,7 +12,7 @@ class bus_driver extends uvm_driver #(bus_seq_item);
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "intf", vif))
+    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "bus_intf", vif))
       `uvm_fatal("NO_VIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
   endfunction
 

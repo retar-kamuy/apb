@@ -1,8 +1,9 @@
+`ifndef APB_AGENT_SVH_
+`define APB_AGENT_SVH_
+
 class apb_agent extends uvm_agent;
-  //uvm_sequencer#(apb_seq_item) sequencer;
-  uvm_sequencer#(bus_seq_item) sequencer;
-  //apb_driver driver;
-  bus_driver driver;
+  uvm_sequencer#(apb_seq_item) sequencer;
+  apb_driver driver;
   apb_monitor monitor;
 
   `uvm_component_utils(apb_agent)
@@ -23,3 +24,5 @@ class apb_agent extends uvm_agent;
   endfunction
 
 endclass
+
+`endif  // APB_AGENT_SVH_

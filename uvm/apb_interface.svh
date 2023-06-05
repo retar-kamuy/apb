@@ -1,4 +1,7 @@
-interface apb_if #(
+`ifndef APB_INTERFACE_SVH_
+`define APB_INTERFACE_SVH_
+
+interface apb_interface #(
   parameter ADDR_WIDTH = 32,
   parameter DATA_WIDTH = 32
 ) (
@@ -19,40 +22,7 @@ interface apb_if #(
   logic                     prdata;
   logic                     pslverr;
 
-  modport requester (
-    input   pclk,
-    input   presetn,
-    output  paddr,
-    output  pprot,
-    output  pnse,
-    output  psel,
-    output  penable,
-    output  pwrite,
-    output  pready,
-    output  pwdata,
-    output  pstrb,
-    input   prdata,
-    input   pslverr
-  );
-
-  modport completer (
-    input   pclk,
-    input   presetn,
-    input   paddr,
-    input   pprot,
-    input   pnse,
-    input   psel,
-    input   penable,
-    input   pwrite,
-    input   pwdata,
-    input   pstrb,
-    output  pready,
-    output  prdata,
-    output  pslverr
-  );
-
-  clocking cb @(posedge pclk);
-    default input #1step output #3ns;
+  clocking requester_cb @(posedge pclk);
     output  paddr;
     output  pprot;
     output  pnse;
@@ -66,4 +36,32 @@ interface apb_if #(
     input   pslverr;
   endclocking
 
+  modport requester (
+    input     pclk,
+    input     presetn,
+    clocking  requester_cb
+  );
+
+  clocking completer_cb @(posedge pclk);
+    input   paddr;
+    input   pprot;
+    input   pnse;
+    input   psel;
+    input   penable;
+    input   pwrite;
+    input   pwdata;
+    input   pstrb;
+    output  pready;
+    output  prdata;
+    output  pslverr;
+  endclocking
+
+  modport completer (
+    input     pclk,
+    input     presetn,
+    clocking  completer_cb
+  );
+
 endinterface
+
+`endif  // APB_INTERFACE_SVH_

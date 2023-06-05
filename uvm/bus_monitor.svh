@@ -16,8 +16,8 @@ class bus_monitor extends uvm_monitor;
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "intf", vif))
-      `uvm_fatal("NOVIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
+    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "bus_intf", vif))
+      `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"});
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -40,7 +40,7 @@ class bus_monitor extends uvm_monitor;
       //act_trans.bus_ready = vif.slave_cb.bus_ready;
       //act_trans.bus_rdata = vif.slave_cb.bus_rdata;
       //act_trans.bus_slverr = vif.slave_cb.bus_slverr;
-    `uvm_info(get_full_name(),$sformatf("TRANSACTION FROM MONITOR"),UVM_LOW);
+    `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
       act_trans.print();
   endtask
 

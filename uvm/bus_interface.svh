@@ -28,9 +28,9 @@ interface bus_interface #(
 
   modport master (
     // default input #1step output #3ns;
-    input   clk,
-    input   rst_n,
-    clocking master_cb
+    input     clk,
+    input     rst_n,
+    clocking  master_cb
   );
 
   clocking slave_cb @(posedge clk);
@@ -45,9 +45,9 @@ interface bus_interface #(
 
   modport slave (
     // default input #1step output #3ns;
-    input   clk,
-    input   rst_n,
-    clocking slave_cb
+    input     clk,
+    input     rst_n,
+    clocking  slave_cb
   );
 
 endinterface
