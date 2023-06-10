@@ -1,0 +1,36 @@
+[*]
+[*] GTKWave Analyzer v3.3.115 (w)1999-2023 BSI
+[*] Sat Jun 10 05:34:30 2023
+[*]
+[dumpfile] "/mnt/c/Repositories/apb/wave.vcd"
+[dumpfile_mtime] "Sat Jun 10 05:17:33 2023"
+[dumpfile_size] 11465
+[savefile] "/mnt/c/Repositories/apb/apb.gtkw"
+[timestart] 0
+[size] 1908 975
+[pos] -1 -1
+*-15.003252 18000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_top.
+[sst_width] 214
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 283
+@28
+tb_top.bus_intf.rst_n
+tb_top.bus_intf.clk
+@22
+tb_top.bus_intf.bus_addr[31:0]
+@28
+tb_top.bus_intf.bus_ena
+tb_top.bus_intf.bus_wstb[3:0]
+@22
+tb_top.bus_intf.bus_wdata[31:0]
+tb_top.bus_intf.bus_rdata[31:0]
+@28
+tb_top.bus_intf.bus_ready
+tb_top.bus_intf.bus_slverr
+@100002028
+^1 /mnt/c/Repositories/apb/vcd.gtkw
+tb_top.u_apb.state[1:0]
+[pattern_trace] 1
+[pattern_trace] 0

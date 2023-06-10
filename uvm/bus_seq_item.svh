@@ -8,6 +8,7 @@ class bus_seq_item extends uvm_sequence_item;
   rand  int unsigned  length;
         byte          byte_enable[];
         int           byte_enable_length;
+        int           response_status;
 
   `uvm_object_utils_begin(bus_seq_item)
     `uvm_field_int(address, UVM_ALL_ON)
@@ -16,6 +17,7 @@ class bus_seq_item extends uvm_sequence_item;
     `uvm_field_int(length , UVM_ALL_ON)
     `uvm_field_array_int(byte_enable, UVM_ALL_ON)
     `uvm_field_int(byte_enable_length , UVM_ALL_ON)
+    `uvm_field_int(response_status , UVM_ALL_ON)
   `uvm_object_utils_end
 
   function new(string name = "bus_seq_item");

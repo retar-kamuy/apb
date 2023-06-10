@@ -27,7 +27,6 @@ interface bus_interface #(
   endclocking
 
   modport master (
-    // default input #1step output #3ns;
     input     clk,
     input     rst_n,
     clocking  master_cb
@@ -44,11 +43,22 @@ interface bus_interface #(
   endclocking
 
   modport slave (
-    // default input #1step output #3ns;
     input     clk,
     input     rst_n,
     clocking  slave_cb
   );
+
+  clocking monitor_cb @(posedge clk);
+    input bus_ena;
+    input bus_wstb;
+    input bus_addr;
+    input bus_wdata;
+    input bus_ready;
+    input bus_rdata;
+    input bus_slverr;
+  endclocking
+
+modport monitor (clocking monitor_cb);
 
 endinterface
 

@@ -11,11 +11,18 @@ class bus_sequence extends uvm_sequence;
   virtual task body();
     for (int i = 0; i < 4; i++) begin
       bus_seq_item item = bus_seq_item::type_id::create("item");
-      start_item(item);
+      // start_item(item);
+      wait_for_grant();
       assert(item.randomize());  
       `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE: %s", item.convert2str()), UVM_LOW);
       item.print();
-      finish_item(item);
+      send_request(item);
+      // finish_item(item);
+      `uvm_info(get_full_name(), $sformatf("WAIT FOR RESPONSE FROM DRIVER"), UVM_LOW);
+      wait_for_item_done();
+      get_response(rsp);
+      `uvm_info(get_full_name(), $sformatf("GET RESPONSE STATUS FROM DRIVER"), UVM_LOW);
+      rsp.print();
     end
   endtask
 
