@@ -43,7 +43,7 @@ module tb_top;
     .bus_wstb   (bus_intf.bus_wstb    ),
     .bus_addr   (bus_intf.bus_addr    ),
     .bus_wdata  (bus_intf.bus_wdata   ),
-    .bus_ready  (bus_intf.bus_ready   ),
+    .bus_wait   (bus_intf.bus_wait    ),
     .bus_rdata  (bus_intf.bus_rdata   ),
     .bus_slverr (bus_intf.bus_slverr  )
   );

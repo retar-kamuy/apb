@@ -22,7 +22,7 @@ module apb #(
   input         [DATA_WIDTH/8-1:0]  bus_wstb,
   input         [DATA_WIDTH-1:0]    bus_addr,
   input         [DATA_WIDTH-1:0]    bus_wdata,
-  output  logic                     bus_ready,
+  output  logic                     bus_wait,
   output  logic [DATA_WIDTH-1:0]    bus_rdata,
   output  logic                     bus_slverr
 );
@@ -66,9 +66,6 @@ module apb #(
         end
       endcase
 
-  logic exit_access;
-  assign exit_access = penable & pready;
-
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
       paddr <= ADDR_WIDTH'(1'd0);
@@ -111,26 +108,27 @@ module apb #(
       bus_rdata <= DATA_WIDTH'(1'd0);
     else
       if (~(|pipeline_inst))
-        if (exit_access)
+        if (penable & pready)
           bus_rdata <= prdata;
 
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
-      bus_ready <= 1'd0;
+      bus_wait <= 1'd0;
       bus_slverr <= 1'd0;
     end else
       case (state)
         IDLE: begin
-          bus_ready <= 1'd0;
           bus_slverr <= 1'd0;
+          if (bus_ena)
+            bus_wait <= 1'd1;
         end
         ACCESS:
-          if (exit_access) begin
-            bus_ready <= 1'd1;
+          if (pready) begin
+            bus_wait <= 1'd0;
             bus_slverr <= pslverr;
           end
         default: begin
-          bus_ready <= bus_ready;
+          bus_wait <= bus_wait;
           bus_slverr <= bus_slverr;
         end
       endcase
@@ -146,9 +144,9 @@ module apb #(
         SETUP:
           state <= ACCESS;
         ACCESS:
-          if (exit_access & bus_ena)
+          if (pready & bus_ena)
             state <= SETUP;
-          else if (exit_access)
+          else if (pready)
             state <= IDLE;
         default:
           state <= state;

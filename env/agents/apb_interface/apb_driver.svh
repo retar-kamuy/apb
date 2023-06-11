@@ -36,7 +36,9 @@ class apb_driver extends uvm_driver #(apb_seq_item);
 
   task drive(apb_seq_item req);
 //    @(vif.slave_cb.paddr or vif.slave_cb.pwrite);
-    //@(vif.slave_cb.psel);
+    @(vif.slave_cb.psel);
+    wait(vif.slave_cb.psel);
+    //wait(vif.slave_cb.psel & vif.slave_cb.penable);
 
     if(vif.slave_cb.pwrite) begin
       vif.slave_cb.pready <= 0;
@@ -55,6 +57,7 @@ class apb_driver extends uvm_driver #(apb_seq_item);
 //        vif.slave_cb.prdata <= 'hzzzzzzzz; // no data in slave with that address
 //
     end
+    @(vif.slave_cb);
   endtask
 
 endclass

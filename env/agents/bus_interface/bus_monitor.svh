@@ -28,10 +28,31 @@ class bus_monitor extends uvm_monitor;
   endtask
 
   task collect_trans();
-    @(vif.monitor_cb.bus_ready);
-    act_trans.address = vif.slave_cb.bus_addr;
-    `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
-    act_trans.print();
+    @(vif.monitor_cb.bus_ena or
+      vif.monitor_cb.bus_wstb or
+      vif.monitor_cb.bus_addr or
+      vif.monitor_cb.bus_wdata or
+      vif.monitor_cb.bus_wait or
+      vif.monitor_cb.bus_rdata or
+      vif.monitor_cb.bus_slverr
+    );
+
+    if (vif.monitor_cb.bus_ena) begin
+      act_trans.address = vif.slave_cb.bus_addr;
+      act_trans.command = |vif.monitor_cb.bus_wstb;
+      act_trans.byte_enable = vif.monitor_cb.bus_wstb;
+
+      wait(~vif.monitor_cb.bus_wait);
+
+      if (|vif.monitor_cb.bus_wstb)
+        act_trans.data = vif.monitor_cb.bus_wdata;
+      else
+        act_trans.data = vif.monitor_cb.bus_rdata;
+      act_trans.response_status = vif.monitor_cb.bus_slverr;
+
+      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2str()), UVM_LOW);
+      // act_trans.print();
+    end
   endtask
 
 endclass

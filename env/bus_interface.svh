@@ -12,7 +12,7 @@ interface bus_interface #(
   logic [DATA_WIDTH/8-1:0]  bus_wstb;
   logic [ADDR_WIDTH-1:0]    bus_addr;
   logic [DATA_WIDTH-1:0]    bus_wdata;
-  logic                     bus_ready;
+  logic                     bus_wait;
   logic [DATA_WIDTH-1:0]    bus_rdata;
   logic                     bus_slverr;
 
@@ -21,7 +21,7 @@ interface bus_interface #(
     output  bus_wstb;
     output  bus_addr;
     output  bus_wdata;
-    input   bus_ready;
+    input   bus_wait;
     input   bus_rdata;
     input   bus_slverr;
   endclocking
@@ -37,7 +37,7 @@ interface bus_interface #(
     input   bus_wstb;
     input   bus_addr;
     input   bus_wdata;
-    output  bus_ready;
+    output  bus_wait;
     output  bus_rdata;
     output  bus_slverr;
   endclocking
@@ -53,7 +53,7 @@ interface bus_interface #(
     input bus_wstb;
     input bus_addr;
     input bus_wdata;
-    input bus_ready;
+    input bus_wait;
     input bus_rdata;
     input bus_slverr;
   endclocking
