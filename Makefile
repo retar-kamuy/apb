@@ -4,13 +4,13 @@ ifeq ($(OS), Windows_NT)
 endif
 
 SRCS = uvm/tb_top.sv uvm/clk_rst_gen.sv src/apb.sv
-INCLUDES = uvm
+INCLUDES = uvm uvm/agents/bus_interface
 TOP = tb_top
 
 all: clean build test
 
 build: $(SRCS)
-	xvlog -sv $^ -L uvm --include $(INCLUDES)
+	xvlog -sv $^ -L uvm $(addprefix --include ,$(INCLUDES))
 	xelab $(TOP) -L uvm -timescale 1ns/1ps
 
 test:
