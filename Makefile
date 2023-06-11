@@ -3,8 +3,8 @@ ifeq ($(OS), Windows_NT)
 	RM = del /q
 endif
 
-SRCS = uvm/tb_top.sv uvm/clk_rst_gen.sv src/apb.sv
-INCLUDES = uvm uvm/agents/bus_interface uvm/agents/apb_interface
+SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv
+INCLUDES = tests tests/sequence_lib env env/agents/bus_interface env/agents/apb_interface
 TOP = tb_top
 
 all: clean build test
