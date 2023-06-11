@@ -4,7 +4,7 @@ ifeq ($(OS), Windows_NT)
 endif
 
 SRCS = uvm/tb_top.sv uvm/clk_rst_gen.sv src/apb.sv
-INCLUDES = uvm uvm/agents/bus_interface
+INCLUDES = uvm uvm/agents/bus_interface uvm/agents/apb_interface
 TOP = tb_top
 
 all: clean build test
