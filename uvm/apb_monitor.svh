@@ -25,20 +25,27 @@ class apb_monitor extends uvm_monitor;
   endtask
 
   task collect_trans();
-    //wait(vif.rst_n);
-    @(vif.completer_cb);
-      act_trans.address = vif.completer_cb.paddr;
-      //act_trans.bus_ena = vif.slave_cb.bus_ena;
-      act_trans.byte_enable_length = 4;
-      for(int i = 0; i < 4; i++) begin
-        act_trans.byte_enable[i] = vif.completer_cb.pstrb[i];
-      end
-      //act_trans.bus_wdata = vif.slave_cb.bus_wdata;
-      //act_trans.bus_ready = vif.slave_cb.bus_ready;
-      //act_trans.bus_rdata = vif.slave_cb.bus_rdata;
-      //act_trans.bus_slverr = vif.slave_cb.bus_slverr;
+    @(vif.monitor_cb.psel or
+      vif.monitor_cb.pwrite or
+      vif.monitor_cb.penable or
+      vif.monitor_cb.pready or
+      vif.monitor_cb.prdata);
+
+    if (vif.monitor_cb.psel) begin
+      act_trans.command = vif.monitor_cb.pwrite ? 1 : 0;
+
+      wait(vif.monitor_cb.penable);
+
+      wait(vif.monitor_cb.pready);
+
+      if(act_trans.command == 1)
+        `uvm_info(get_full_name(), $sformatf("WRITE TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
+      else
+        `uvm_info(get_full_name(), $sformatf("READ TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
+    end
+
     `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
-      act_trans.print();
+    act_trans.print();
   endtask
 
 endclass

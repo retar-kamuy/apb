@@ -19,10 +19,10 @@ interface apb_interface #(
   logic [DATA_WIDTH/8-1:0]  pstrb;
   // Completer
   logic                     pready;
-  logic                     prdata;
+  logic [DATA_WIDTH-1:0]    prdata;
   logic                     pslverr;
 
-  clocking requester_cb @(posedge pclk);
+  clocking master_cb @(posedge pclk);
     output  paddr;
     output  pprot;
     output  pnse;
@@ -36,13 +36,13 @@ interface apb_interface #(
     input   pslverr;
   endclocking
 
-  modport requester (
+  modport master (
     input     pclk,
     input     presetn,
-    clocking  requester_cb
+    clocking  master_cb
   );
 
-  clocking completer_cb @(posedge pclk);
+  clocking slave_cb @(posedge pclk);
     input   paddr;
     input   pprot;
     input   pnse;
@@ -56,10 +56,28 @@ interface apb_interface #(
     output  pslverr;
   endclocking
 
-  modport completer (
+  modport slave (
     input     pclk,
     input     presetn,
-    clocking  completer_cb
+    clocking  slave_cb
+  );
+
+ clocking monitor_cb @(posedge pclk);
+    input   paddr;
+    input   pprot;
+    input   pnse;
+    input   psel;
+    input   penable;
+    input   pwrite;
+    input   pwdata;
+    input   pstrb;
+    input   pready;
+    input   prdata;
+    input   pslverr;
+  endclocking
+
+  modport monitor (
+    clocking  monitor_cb
   );
 
 endinterface

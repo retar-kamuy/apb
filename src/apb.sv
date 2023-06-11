@@ -15,7 +15,7 @@ module apb #(
   output  logic [DATA_WIDTH/8-1:0]  pstrb,
   // Completer
   input                             pready,
-  input                             prdata,
+  input         [DATA_WIDTH-1:0]    prdata,
   input                             pslverr,
   // Local Inerface
   input                             bus_ena,
@@ -32,15 +32,39 @@ module apb #(
     ACCESS = 2
   } state;
 
-  assign pprot = 3'b000;
-  assign pnse = 1'b0;
+  assign pprot = 3'd0;
+  assign pnse = 1'd0;
 
-  logic usr_read_req;
-  assign usr_read_req = bus_ena & ~(|bus_wstb);
-  logic usr_write_req;
-  assign usr_write_req = bus_ena & (|bus_wstb);
-  logic transfer;
-  assign transfer = usr_read_req | usr_write_req;
+  logic [DATA_WIDTH/8-1:0] pipeline_inst;
+  logic [DATA_WIDTH-1:0] pipeline_data;
+  logic [ADDR_WIDTH-1:0] pipeline_addr;
+  always_ff @(posedge pclk or negedge presetn)
+    if (~presetn) begin
+      pipeline_inst <= (DATA_WIDTH/8)'(1'd0);
+      pipeline_data <= DATA_WIDTH'(1'd0);
+      pipeline_addr <= ADDR_WIDTH'(1'd0);
+    end else
+      case (state)
+        IDLE: begin
+          pipeline_inst <= bus_wstb;
+          pipeline_data <= bus_wdata;
+          pipeline_addr <= bus_addr;
+        end
+        SETUP: begin
+          pipeline_inst <= (DATA_WIDTH/8)'(1'd0);
+          pipeline_data <= DATA_WIDTH'(1'd0);
+          pipeline_addr <= ADDR_WIDTH'(1'd0);
+        end
+        ACCESS: begin
+          pipeline_data <= DATA_WIDTH'(1'd0);
+          pipeline_addr <= ADDR_WIDTH'(1'd0);
+        end
+        default: begin
+          pipeline_inst <= pipeline_inst;
+          pipeline_data <= pipeline_data;
+          pipeline_addr <= pipeline_addr;
+        end
+      endcase
 
   logic exit_access;
   assign exit_access = penable & pready;
@@ -48,27 +72,37 @@ module apb #(
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
       paddr <= ADDR_WIDTH'(1'd0);
-      pwrite <= 1'b0;
-      psel <= 1'b0;
-      penable <= 1'b0;
+      pwrite <= 1'd0;
+      psel <= 1'd0;
+      penable <= 1'd0;
       pwdata <= DATA_WIDTH'(1'd0);
+      pstrb <= (DATA_WIDTH/8)'(1'd0);
     end else
       case (state)
         IDLE: begin
           paddr <= ADDR_WIDTH'(1'd0);
-          pwrite <= 1'b0;
-          psel <= 1'b0;
-          penable <= 1'b0;
+          pwrite <= 1'd0;
+          psel <= 1'd0;
+          penable <= 1'd0;
+          pstrb <= (DATA_WIDTH/8)'(1'd0);
         end
         SETUP: begin
-          paddr <= bus_addr;
-          if (usr_write_req)
-            pwrite <= 1'b1;
-          psel <= 1'b1;
-          pwdata <= bus_wdata;
+          paddr <= pipeline_addr;
+          pwrite <= |pipeline_inst;
+          psel <= 1'd1;
+          pwdata <= pipeline_data;
+          pstrb <= pipeline_inst;
         end
         ACCESS: begin
-          penable <= 1'b1;
+          penable <= 1'd1;
+        end
+        default: begin
+          paddr <= paddr;
+          pwrite <= pwrite;
+          psel <= psel;
+          penable <= penable;
+          pwdata <= pwdata;
+          pstrb <= pstrb;
         end
       endcase
 
@@ -76,25 +110,29 @@ module apb #(
     if (~presetn)
       bus_rdata <= DATA_WIDTH'(1'd0);
     else
-      if (exit_access)
-        if (usr_read_req)
+      if (~(|pipeline_inst))
+        if (exit_access)
           bus_rdata <= prdata;
 
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
-      bus_ready <= 1'b0;
-      bus_slverr <= 1'b0;
+      bus_ready <= 1'd0;
+      bus_slverr <= 1'd0;
     end else
       case (state)
         IDLE: begin
-          bus_ready <= 1'b0;
-          bus_slverr <= 1'b0;
+          bus_ready <= 1'd0;
+          bus_slverr <= 1'd0;
         end
         ACCESS:
           if (exit_access) begin
-            bus_ready <= 1'b1;
+            bus_ready <= 1'd1;
             bus_slverr <= pslverr;
           end
+        default: begin
+          bus_ready <= bus_ready;
+          bus_slverr <= bus_slverr;
+        end
       endcase
 
   always_ff @(posedge pclk or negedge presetn)
@@ -103,15 +141,17 @@ module apb #(
     else
       case (state)
         IDLE:
-          if (transfer)
+          if (bus_ena)
             state <= SETUP;
         SETUP:
           state <= ACCESS;
         ACCESS:
-          if (exit_access & transfer)
+          if (exit_access & bus_ena)
             state <= SETUP;
           else if (exit_access)
             state <= IDLE;
+        default:
+          state <= state;
       endcase
 
 endmodule

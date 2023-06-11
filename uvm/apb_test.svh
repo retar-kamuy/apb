@@ -5,7 +5,7 @@ class apb_base_test extends uvm_test;
   apb_sequence apb_seq;
   bus_sequence bus_seq;
 
-  function new(string name = "apb_base_test", uvm_component parent=null);
+  function new(string name = "apb_base_test", uvm_component parent = null);
     super.new(name, parent);
   endfunction
 

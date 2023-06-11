@@ -1,20 +1,23 @@
 [*]
 [*] GTKWave Analyzer v3.3.115 (w)1999-2023 BSI
-[*] Sat Jun 10 05:34:30 2023
+[*] Sun Jun 11 07:55:57 2023
 [*]
 [dumpfile] "/mnt/c/Repositories/apb/wave.vcd"
-[dumpfile_mtime] "Sat Jun 10 05:17:33 2023"
-[dumpfile_size] 11465
+[dumpfile_mtime] "Sun Jun 11 07:52:37 2023"
+[dumpfile_size] 59250
 [savefile] "/mnt/c/Repositories/apb/apb.gtkw"
 [timestart] 0
 [size] 1908 975
 [pos] -1 -1
-*-15.003252 18000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-17.344629 127900 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_top.
+[treeopen] tb_top.apb_intf.
 [sst_width] 214
-[signals_width] 150
+[signals_width] 182
 [sst_expanded] 1
 [sst_vpaned_height] 283
+@200
+-bus_interface
 @28
 tb_top.bus_intf.rst_n
 tb_top.bus_intf.clk
@@ -29,8 +32,39 @@ tb_top.bus_intf.bus_rdata[31:0]
 @28
 tb_top.bus_intf.bus_ready
 tb_top.bus_intf.bus_slverr
-@100002028
+@200
+-apb_interface
+@28
+tb_top.apb_intf.pclk
+@22
+tb_top.apb_intf.paddr[31:0]
+@28
+tb_top.apb_intf.pwrite
+tb_top.apb_intf.psel
+tb_top.apb_intf.penable
+tb_top.apb_intf.pstrb[3:0]
+@22
+tb_top.apb_intf.pwdata[31:0]
+tb_top.apb_intf.prdata[31:0]
+@28
+tb_top.apb_intf.pready
+tb_top.apb_intf.pprot[2:0]
+tb_top.apb_intf.presetn
+tb_top.apb_intf.pslverr
+tb_top.apb_intf.pnse
+@200
+-apb
+@28
+tb_top.u_apb.presetn
+tb_top.u_apb.pclk
+tb_top.u_apb.exit_access
+@2028
 ^1 /mnt/c/Repositories/apb/vcd.gtkw
 tb_top.u_apb.state[1:0]
+@29
+tb_top.u_apb.pipeline_inst[3:0]
+@22
+tb_top.u_apb.pipeline_addr[31:0]
+tb_top.u_apb.pipeline_data[31:0]
 [pattern_trace] 1
 [pattern_trace] 0
