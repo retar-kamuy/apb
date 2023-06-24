@@ -91,7 +91,14 @@ module apb #(
           pstrb <= pipeline_inst;
         end
         ACCESS: begin
-          penable <= 1'd1;
+          if (pready) begin
+            psel <= 1'd0;
+            penable <= 1'd0;
+          end
+          else begin
+            psel <= 1'd1;
+            penable <= 1'd1;
+          end
         end
         default: begin
           paddr <= paddr;
