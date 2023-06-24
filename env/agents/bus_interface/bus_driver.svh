@@ -22,6 +22,7 @@ class bus_driver extends uvm_driver #(bus_seq_item);
 
     reset();
     wait(vif.rst_n);
+    repeat(10) @(vif.master_cb);
 
     forever begin
       seq_item_port.get_next_item(req);

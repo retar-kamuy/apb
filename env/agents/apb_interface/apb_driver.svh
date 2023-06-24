@@ -19,11 +19,17 @@ class apb_driver extends uvm_driver #(apb_seq_item);
 
     reset();
     wait(vif.presetn);
+    repeat(10) @(vif.slave_cb);
 
     forever begin
       seq_item_port.get_next_item(req);
-      drive(req);
-      `uvm_info("DRV", $sformatf("Wait for item from sequencer"), UVM_HIGH)
+      // drive(req);
+      vif.slave_cb.pready <= 1;
+      @(vif.pclk);
+      wait(vif.monitor_cb.penable);
+      vif.slave_cb.pready <= 0;
+      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM DRIVER"), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("RESPONSE FROM DUT"), UVM_LOW);
       seq_item_port.item_done();
     end
   endtask
@@ -36,20 +42,22 @@ class apb_driver extends uvm_driver #(apb_seq_item);
 
   task drive(apb_seq_item req);
 //    @(vif.slave_cb.paddr or vif.slave_cb.pwrite);
-    @(vif.slave_cb.psel);
+    //@(vif.slave_cb.psel);
     wait(vif.slave_cb.psel);
     //wait(vif.slave_cb.psel & vif.slave_cb.penable);
 
     if(vif.slave_cb.pwrite) begin
-      vif.slave_cb.pready <= 0;
-      repeat(req.num_of_wait_cycles) @(vif.pclk);
       vif.slave_cb.pready <= 1;
+      // repeat(req.num_of_wait_cycles) @(vif.pclk);
+      @(vif.pclk);
+      vif.slave_cb.pready <= 0;
 //
 //      slv_memory[vif.slave_cb.paddr] = vif.slave_cb.pwdata;
     end else begin
-      vif.slave_cb.pready <= 0;
-      repeat(req.num_of_wait_cycles) @(vif.pclk);
       vif.slave_cb.pready <= 1;
+      // repeat(req.num_of_wait_cycles) @(vif.pclk);
+      @(vif.pclk);
+      vif.slave_cb.pready <= 0;
 //
 //      if(slv_memory.exists(vif.slave_cb.paddr))
 //        vif.slave_cb.prdata <= slv_memory[vif.slave_cb.paddr];

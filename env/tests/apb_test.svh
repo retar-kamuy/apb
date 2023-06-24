@@ -19,8 +19,10 @@ class apb_base_test extends uvm_test;
 
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
-    apb_seq.start(env.apb_agnt.sequencer);
-    bus_seq.start(env.bus_agnt.sequencer);
+    fork
+      apb_seq.start(env.apb_agnt.sequencer);
+      bus_seq.start(env.bus_agnt.sequencer);
+    join_any
     phase.drop_objection(this);
   endtask
 

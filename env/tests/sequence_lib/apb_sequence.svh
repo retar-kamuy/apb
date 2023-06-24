@@ -1,33 +1,24 @@
 class apb_sequence extends uvm_sequence;
   `uvm_object_utils(apb_sequence)
 
+  uvm_event_pool ev_pool = uvm_event_pool::get_global_pool();
+  uvm_event ev;
+
   function new(string name="apb_sequence");
     super.new(name);
   endfunction
 
   virtual task body();
-    for (int i = 0; i < 4; i++) begin
-      apb_seq_item item = apb_seq_item::type_id::create("item");
-      start_item(item);
-      assert(item.randomize());  
-      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE"),UVM_LOW);
-      `uvm_info(get_full_name(),  $sformatf("Generate new item: %s", item.convert2str()), UVM_HIGH)
-      item.print();
-      finish_item(item);
+    forever begin
+      apb_seq_item req = apb_seq_item::type_id::create("req");
+      ev = ev_pool.get("mon_ev");
+      ev.wait_trigger();
+      $cast(req, ev.get_trigger_data());
+      start_item(req);
+      assert(req.randomize());
+      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE"), UVM_LOW);
+      finish_item(req);
     end
-    //forever begin
-    //  apb_seq_item req = apb_seq_item::type_id::create("req");
-    //  start_item(req);
-    //  req.randomize();
-    //  `uvm_info("SEQ", $sformatf("Generate new item: %s", req.convert2str()), UVM_HIGH)
-    //  finish_item(req);
-    //  
-    //  //apb_seq_item req = apb_seq_item::type_id::create("req");
-    //  //apb_seq_item rsp = apb_seq_item::type_id::create("rsp");
-    //  //wait_for_grant();
-    //  //send_request(req);
-    //  //get_response(rsp);
-    //end
   endtask
 
 endclass
