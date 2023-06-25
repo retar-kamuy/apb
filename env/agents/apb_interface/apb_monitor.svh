@@ -52,7 +52,7 @@ class apb_monitor extends uvm_monitor;
     end
 
     `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
-    act_trans.print();
+    // act_trans.print();
   endtask
 
 endclass

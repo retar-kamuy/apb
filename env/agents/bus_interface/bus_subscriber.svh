@@ -4,16 +4,27 @@ class bus_subscriber extends uvm_subscriber #(bus_seq_item);
   int           command;
   bit   [63:0]  address;
   bit   [31:0]  data;
+  bit   [3:0]   byte_enable;
 
   covergroup cover_bus;
     coverpoint command {
       bins c[] = {0, 1};
     }
     coverpoint address { 
-      bins a = {[0:4294967296-1]};
+      bins a[] = {0, 32'hFFFF_FFFF};
     }
     coverpoint data {
-      bins d = {[0:4294967296-1]};
+      bins d[] = {0, 32'hFFFF_FFFF};
+    }
+    coverpoint byte_enable {
+      bins b[] = {
+        4'b0000,
+        4'b0001,
+        4'b0010,
+        4'b0100,
+        4'b1000,
+        4'b1111
+      };
     }
   endgroup
 
@@ -23,11 +34,12 @@ class bus_subscriber extends uvm_subscriber #(bus_seq_item);
   endfunction
 
     function void write(bus_seq_item t);
-      `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_NONE);
+      `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG);
 
-      command = t.command;
-      address = t.address;
-      data    = t.data;
+      command     = t.command;
+      address     = t.address;
+      data        = t.data;
+      byte_enable = t.byte_enable;
       cover_bus.sample();
       /*
       begin

@@ -5,18 +5,14 @@ class bus_seq_item extends uvm_sequence_item;
   rand  bit           [63:0]  address;
   rand  int                   command;
   rand  bit           [31:0]  data;
-  rand  int unsigned          length;
   rand  bit           [3:0]   byte_enable;
-  rand  int                   byte_enable_length;
         int                   response_status;
 
   `uvm_object_utils_begin(bus_seq_item)
     `uvm_field_int(address            , UVM_DEFAULT)
     `uvm_field_int(command            , UVM_DEFAULT)
     `uvm_field_int(data               , UVM_DEFAULT)
-    `uvm_field_int(length             , UVM_DEFAULT)
     `uvm_field_int(byte_enable        , UVM_DEFAULT)
-    `uvm_field_int(byte_enable_length , UVM_DEFAULT)
     `uvm_field_int(response_status    , UVM_DEFAULT)
   `uvm_object_utils_end
 
@@ -25,17 +21,16 @@ class bus_seq_item extends uvm_sequence_item;
   endfunction
 
   constraint c1 {
-    address inside {[0:100]};
-    command inside {[0:1]};
-    length == 4;
-    byte_enable dist {0 :/ 50, [1:15] :/ 50};
-    byte_enable_length == 4;
+    address     inside  {[0:32'hFFFF_FFFF]};
+    command     inside  {[0:1]};
+    data        inside  {[0:32'hFFFF_FFFF]};
+    byte_enable dist    {0 :/ 50, [1:4'hF] :/ 50};
   }
 
   function string convert2string();
     return $sformatf(
-      "address=0x%x, command=%d, data=0x%x, length=%d, response_status=%d",
-      address, command, data, length, response_status
+      "address=0x%x, command=%d, data=0x%x, response_status=%d",
+      address, command, data, response_status
     );
   endfunction
 

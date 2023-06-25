@@ -11,7 +11,7 @@ TOP = tb_top
 COVDIR = xsim.covdb
 REPORT_DIR = xsim.out
 
-all: clean build test
+all: clean build test post
 
 build: $(SRCS)
 	xvlog -sv $^ -L uvm $(addprefix --include ,$(INCLUDES))
@@ -19,7 +19,7 @@ build: $(SRCS)
 
 test:
 #	xsim work.tb_top -testplusarg UVM_TESTNAME=apb_base_test
-	xsim $(TOP) -R
+	xsim $(TOP) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\"
 
 post:
 ifeq ("$(wildcard $(REPORT_DIR)"), "")
@@ -28,8 +28,8 @@ endif
 	xcrg -dir $(COVDIR) -report_dir $(REPORT_DIR)/cov -report_format html
 
 clean:
-	$(RM) *.log *.wlf *.vcd
 	$(RD) work
+	$(RD) xsim.dir xsim.covdb
 	$(RM) xvlog.pb xelab.pb
 	$(EM) xsim_*.backup.* xsim.jou *.wdb
-	$(RD) xsim.dir xsim.covdb
+	$(RM) *.log *.wlf *.vcd

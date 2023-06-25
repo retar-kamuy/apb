@@ -10,7 +10,7 @@ class bus_sequence #(type REQ=bus_seq_item, type RSP=bus_seq_item) extends uvm_s
   endfunction
 
   virtual task body();
-    for (int i = 0; i < 16; i++) begin
+    for (int i = 0; i < 65536; i++) begin
       // bus_seq_item req = bus_seq_item::type_id::create("req");
       REQ req = REQ::type_id::create("req");
       wait_for_grant();
