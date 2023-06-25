@@ -59,3 +59,19 @@ module tb_top;
   end
 
 endmodule
+
+bind tb_top.u_apb apb_interface_assertions apb_interface_sva_inst (
+  pclk,
+  presetn,
+  paddr,
+  pprot,
+  pnse,
+  psel,
+  penable,
+  pwrite,
+  pwdata,
+  pstrb,
+  pready,
+  prdata,
+  pslverr
+);

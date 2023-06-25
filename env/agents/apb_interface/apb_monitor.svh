@@ -1,5 +1,5 @@
 class apb_monitor extends uvm_monitor;
-  uvm_analysis_port#(apb_seq_item) mon_analysis_port;
+  // uvm_analysis_port#(apb_seq_item) apb_analysis_port;
   apb_seq_item act_trans;
   virtual apb_interface vif;
 
@@ -11,7 +11,7 @@ class apb_monitor extends uvm_monitor;
   function new(string name, uvm_component parent);
     super.new(name, parent);
     act_trans = new();
-    mon_analysis_port = new("mon_analysis_port", this);
+    // apb_analysis_port = new("apb_analysis_port", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -27,7 +27,7 @@ class apb_monitor extends uvm_monitor;
       ev = ev_pool.get("mon_ev");
       ev.trigger(act_trans);
       collect_trans();
-      //mon_analysis_port.write(act_trans);
+      // apb_analysis_port.write(act_trans);
     end
   endtask
 

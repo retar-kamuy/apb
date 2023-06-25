@@ -2,10 +2,14 @@ RM = rm -rf
 ifeq ($(OS), Windows_NT)
 	RM = del /q
 endif
+RD = rd /q /s
 
-SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv
+SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv env/tb/apb_interface_assertions.sva
 INCLUDES = tests tests/sequence_lib env env/agents/bus_interface env/agents/apb_interface
 TOP = tb_top
+
+COVDIR = xsim.covdb
+REPORT_DIR = xsim.out
 
 all: clean build test
 
@@ -17,7 +21,15 @@ test:
 #	xsim work.tb_top -testplusarg UVM_TESTNAME=apb_base_test
 	xsim $(TOP) -R
 
+post:
+ifeq ("$(wildcard $(REPORT_DIR)"), "")
+	mkdir $(REPORT_DIR)
+endif
+	xcrg -dir $(COVDIR) -report_dir $(REPORT_DIR)/cov -report_format html
+
 clean:
-	$(RM) work *.log *.wlf
-	$(RM) xvlog.log xvlog.pb xelab.pb xelab.log
-	$(RM) xsim.dir  xsim_*.backup.* xsim.jou xsim.log
+	$(RM) *.log *.wlf *.vcd
+	$(RD) work
+	$(RM) xvlog.pb xelab.pb
+	$(EM) xsim_*.backup.* xsim.jou *.wdb
+	$(RD) xsim.dir xsim.covdb

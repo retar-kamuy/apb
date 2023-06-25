@@ -2,16 +2,16 @@
 `define BUS_MONITOR_SVH_
 
 class bus_monitor extends uvm_monitor;
-  uvm_analysis_port#(bus_seq_item) mon_analysis_port;
+  `uvm_component_utils(bus_monitor)
+
+  uvm_analysis_port#(bus_seq_item) bus_analysis_port;
   bus_seq_item act_trans;
   virtual bus_interface vif;
-
-  `uvm_component_utils(bus_monitor)
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
     act_trans = new();
-    mon_analysis_port = new("mon_analysis_port", this);
+    bus_analysis_port = new("bus_analysis_port", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -23,7 +23,7 @@ class bus_monitor extends uvm_monitor;
   virtual task run_phase(uvm_phase phase);
     forever begin
       collect_trans();
-      //mon_analysis_port.write(act_trans);
+      bus_analysis_port.write(act_trans);
     end
   endtask
 
@@ -50,7 +50,7 @@ class bus_monitor extends uvm_monitor;
         act_trans.data = vif.monitor_cb.bus_rdata;
       act_trans.response_status = vif.monitor_cb.bus_slverr;
 
-      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2str()), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2string()), UVM_LOW);
       // act_trans.print();
     end
   endtask

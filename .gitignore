@@ -6,6 +6,6 @@ tags
 *.pb
 *.jou
 *.wdb
-xsim.dir/
+xsim.*/
 
 *.vcd

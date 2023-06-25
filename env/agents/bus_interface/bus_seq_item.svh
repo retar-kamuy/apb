@@ -32,7 +32,7 @@ class bus_seq_item extends uvm_sequence_item;
     byte_enable_length == 4;
   }
 
-  function string convert2str();
+  function string convert2string();
     return $sformatf(
       "address=0x%x, command=%d, data=0x%x, length=%d, response_status=%d",
       address, command, data, length, response_status

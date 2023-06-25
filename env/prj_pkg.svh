@@ -9,6 +9,7 @@ package prj_pkg;
   import uvm_pkg::*;
   `include "agents/bus_interface/bus_seq_item.svh"
   `include "agents/bus_interface/bus_monitor.svh"
+  `include "agents/bus_interface/bus_subscriber.svh"
   `include "agents/bus_interface/bus_driver.svh"
   `include "tests/sequence_lib/bus_sequence.svh"
   `include "agents/bus_interface/bus_agent.svh"

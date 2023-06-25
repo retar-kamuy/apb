@@ -15,7 +15,7 @@ class bus_sequence #(type REQ=bus_seq_item, type RSP=bus_seq_item) extends uvm_s
       REQ req = REQ::type_id::create("req");
       wait_for_grant();
       assert(req.randomize());
-      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE: %s", req.convert2str()), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE: %s", req.convert2string()), UVM_LOW);
       // req.print();
       send_request(req);
       `uvm_info(get_full_name(), $sformatf("WAIT FOR RESPONSE FROM DRIVER"), UVM_LOW);
