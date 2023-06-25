@@ -9,11 +9,11 @@ class bus_seq_item extends uvm_sequence_item;
         int                   response_status;
 
   `uvm_object_utils_begin(bus_seq_item)
-    `uvm_field_int(address            , UVM_DEFAULT)
-    `uvm_field_int(command            , UVM_DEFAULT)
-    `uvm_field_int(data               , UVM_DEFAULT)
-    `uvm_field_int(byte_enable        , UVM_DEFAULT)
-    `uvm_field_int(response_status    , UVM_DEFAULT)
+    `uvm_field_int(address          , UVM_DEFAULT)
+    `uvm_field_int(command          , UVM_DEFAULT)
+    `uvm_field_int(data             , UVM_DEFAULT)
+    `uvm_field_int(byte_enable      , UVM_DEFAULT)
+    `uvm_field_int(response_status  , UVM_DEFAULT)
   `uvm_object_utils_end
 
   function new(string name = "bus_seq_item");

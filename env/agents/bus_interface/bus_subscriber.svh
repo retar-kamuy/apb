@@ -11,10 +11,12 @@ class bus_subscriber extends uvm_subscriber #(bus_seq_item);
       bins c[] = {0, 1};
     }
     coverpoint address { 
-      bins a[] = {0, 32'hFFFF_FFFF};
+      bins a0 = {0};
+      wildcard bins a1 = {1'b1, 31'h????_????};
     }
     coverpoint data {
-      bins d[] = {0, 32'hFFFF_FFFF};
+      bins d0 = {0};
+      wildcard bins d1 = {1'b1, 31'h????_????};
     }
     coverpoint byte_enable {
       bins b[] = {

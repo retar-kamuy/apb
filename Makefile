@@ -11,25 +11,30 @@ TOP = tb_top
 COVDIR = xsim.covdb
 REPORT_DIR = xsim.out
 
-all: clean build test post
+all: clean build test cover
 
 build: $(SRCS)
 	xvlog -sv $^ -L uvm $(addprefix --include ,$(INCLUDES))
 	xelab $(TOP) -L uvm -timescale 1ns/1ps
 
 test:
-#	xsim work.tb_top -testplusarg UVM_TESTNAME=apb_base_test
+ifeq ("$(wildcard xsim.covdb"), "xsim.covdb")
+	$(RD) xsim.covdb
+	mkdir xsim.covdb
+endif
 	xsim $(TOP) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\"
 
-post:
-ifeq ("$(wildcard $(REPORT_DIR)"), "")
+cover:
+ifeq ("$(wildcard $(REPORT_DIR)"), "$(REPORT_DIR)")
+	$(RD) $(REPORT_DIR)
 	mkdir $(REPORT_DIR)
 endif
 	xcrg -dir $(COVDIR) -report_dir $(REPORT_DIR)/cov -report_format html
 
 clean:
-	$(RD) work
-	$(RD) xsim.dir xsim.covdb
+ifeq ("$(wildcard xsim.dir"), "xsim.dir")
+	$(RD) xsim.dir
+endif
 	$(RM) xvlog.pb xelab.pb
-	$(EM) xsim_*.backup.* xsim.jou *.wdb
-	$(RM) *.log *.wlf *.vcd
+	$(RM) xsim_*.backup.* xsim.jou *.wdb
+	$(RM) *.log *.vcd
