@@ -1,6 +1,6 @@
 class apb_monitor extends uvm_monitor;
-  // uvm_analysis_port#(apb_seq_item) apb_analysis_port;
-  apb_seq_item act_trans;
+  // uvm_analysis_port#(apb_transaction) apb_analysis_port;
+  apb_transaction act_trans;
   virtual apb_interface vif;
 
   uvm_event_pool ev_pool = uvm_event_pool::get_global_pool();
@@ -22,7 +22,7 @@ class apb_monitor extends uvm_monitor;
 
   virtual task run_phase(uvm_phase phase);
     forever begin
-      act_trans = apb_seq_item::type_id::create("act_trans");
+      act_trans = apb_transaction::type_id::create("act_trans");
       //act_trans.num_of_wait_cycles = 1;
       ev = ev_pool.get("mon_ev");
       ev.trigger(act_trans);

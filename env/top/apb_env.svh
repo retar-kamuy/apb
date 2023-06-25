@@ -4,7 +4,7 @@
 class apb_env extends uvm_env;
   apb_agent apb_agnt;
   bus_agent bus_agnt;
-  bus_subscriber bus_sbscrbr;
+  bus_coverage bus_cov;
   //apb_scoreboard scoreboard;
 
   `uvm_component_utils(apb_env)
@@ -17,13 +17,13 @@ class apb_env extends uvm_env;
     super.build_phase(phase);
     apb_agnt = apb_agent::type_id::create("apb_agnt", this);
     bus_agnt = bus_agent::type_id::create("bus_agnt", this);
-    bus_sbscrbr = bus_subscriber::type_id::create("bus_sbscrbr", this);
+    bus_cov = bus_coverage::type_id::create("bus_cov", this);
     //scoreboard = apb_scoreboard::type_id::create("scoreboard", this);
   endfunction
 
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    bus_agnt.bus_analysis_port.connect(bus_sbscrbr.analysis_export);
+    bus_agnt.bus_analysis_port.connect(bus_cov.analysis_export);
     //agent.monitor.apb_analysis_port.connect(scoreboard.analysis_imp);
   endfunction
 

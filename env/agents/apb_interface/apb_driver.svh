@@ -1,4 +1,4 @@
-class apb_driver extends uvm_driver #(apb_seq_item);
+class apb_driver extends uvm_driver #(apb_transaction);
   virtual apb_interface vif;
   int unsigned slv_memory [bit [31:0]];
 
@@ -15,7 +15,7 @@ class apb_driver extends uvm_driver #(apb_seq_item);
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    apb_seq_item req;
+    apb_transaction req;
 
     reset();
     wait(vif.presetn);
@@ -35,7 +35,7 @@ class apb_driver extends uvm_driver #(apb_seq_item);
     vif.slave_cb.pslverr  <= 0;
   endtask
 
-  task drive(apb_seq_item req);
+  task drive(apb_transaction req);
     wait(vif.slave_cb.psel);
     repeat(req.delay) @(vif.slave_cb);
 

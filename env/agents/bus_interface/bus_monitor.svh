@@ -4,8 +4,8 @@
 class bus_monitor extends uvm_monitor;
   `uvm_component_utils(bus_monitor)
 
-  uvm_analysis_port#(bus_seq_item) bus_analysis_port;
-  bus_seq_item act_trans;
+  uvm_analysis_port#(bus_transaction) bus_analysis_port;
+  bus_transaction act_trans;
   virtual bus_interface vif;
 
   function new(string name, uvm_component parent);

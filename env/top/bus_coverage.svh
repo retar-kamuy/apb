@@ -1,12 +1,16 @@
-class bus_subscriber extends uvm_subscriber #(bus_seq_item);
-  `uvm_component_utils(bus_subscriber)
+
+`ifndef BUS_COVERAGE
+`define BUS_COVERAGE
+
+class bus_coverage extends uvm_subscriber #(bus_transaction);
+  `uvm_component_utils(bus_coverage)
 
   int           command;
   bit   [63:0]  address;
   bit   [31:0]  data;
   bit   [3:0]   byte_enable;
 
-  covergroup cover_bus;
+  covergroup cg;
     coverpoint command {
       bins c[] = {0, 1};
     }
@@ -32,17 +36,17 @@ class bus_subscriber extends uvm_subscriber #(bus_seq_item);
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
-    cover_bus = new();
+    cg = new();
   endfunction
 
-    function void write(bus_seq_item t);
+    function void write(bus_transaction t);
       `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG);
 
       command     = t.command;
       address     = t.address;
       data        = t.data;
       byte_enable = t.byte_enable;
-      cover_bus.sample();
+      cg.sample();
       /*
       begin
         my_transaction expected;
@@ -55,3 +59,5 @@ class bus_subscriber extends uvm_subscriber #(bus_seq_item);
     endfunction
 
   endclass
+
+`endif  // BUS_COVERAGE

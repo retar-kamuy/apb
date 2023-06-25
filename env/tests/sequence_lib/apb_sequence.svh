@@ -10,7 +10,7 @@ class apb_sequence extends uvm_sequence;
 
   virtual task body();
     forever begin
-      apb_seq_item req = apb_seq_item::type_id::create("req");
+      apb_transaction req = apb_transaction::type_id::create("req");
       ev = ev_pool.get("mon_ev");
       ev.wait_trigger();
       $cast(req, ev.get_trigger_data());

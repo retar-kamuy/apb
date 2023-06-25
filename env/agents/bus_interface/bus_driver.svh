@@ -1,7 +1,7 @@
 `ifndef BUS_DRIVER_SVH_
 `define BUS_DRIVER_SVH_
 
-class bus_driver extends uvm_driver #(bus_seq_item);
+class bus_driver extends uvm_driver #(bus_transaction);
   virtual bus_interface vif;
 
   `uvm_component_utils(bus_driver)
@@ -17,8 +17,8 @@ class bus_driver extends uvm_driver #(bus_seq_item);
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    bus_seq_item req;
-    bus_seq_item rsp;
+    bus_transaction req;
+    bus_transaction rsp;
 
     reset();
     wait(vif.rst_n);
@@ -34,7 +34,7 @@ class bus_driver extends uvm_driver #(bus_seq_item);
     end
   endtask
 
-  task drive(bus_seq_item req);
+  task drive(bus_transaction req);
     wait(~vif.master_cb.bus_wait);
     vif.master_cb.bus_ena <= 1;
     vif.master_cb.bus_wstb <= req.byte_enable;
@@ -45,9 +45,9 @@ class bus_driver extends uvm_driver #(bus_seq_item);
     @(vif.master_cb);
   endtask
 
-  task response(input bus_seq_item req, output bus_seq_item rsp);
+  task response(input bus_transaction req, output bus_transaction rsp);
     wait(~vif.master_cb.bus_wait);
-    rsp = bus_seq_item::type_id::create("rsp");
+    rsp = bus_transaction::type_id::create("rsp");
     rsp.set_id_info(req);
     rsp.response_status = vif.master_cb.bus_slverr == 0 ? 1 : -1;
   endtask

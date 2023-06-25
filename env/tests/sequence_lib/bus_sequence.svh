@@ -2,7 +2,7 @@
 `define BUS_SEQUENCE_SVH_
 
 // class bus_sequence extends uvm_sequence;
-class bus_sequence #(type REQ=bus_seq_item, type RSP=bus_seq_item) extends uvm_sequence #(REQ, RSP);
+class bus_sequence #(type REQ=bus_transaction, type RSP=bus_transaction) extends uvm_sequence #(REQ, RSP);
   `uvm_object_utils(bus_sequence)
 
   function new(string name="bus_sequence");
@@ -11,7 +11,7 @@ class bus_sequence #(type REQ=bus_seq_item, type RSP=bus_seq_item) extends uvm_s
 
   virtual task body();
     for (int i = 0; i < 256; i++) begin
-      // bus_seq_item req = bus_seq_item::type_id::create("req");
+      // bus_transaction req = bus_transaction::type_id::create("req");
       REQ req = REQ::type_id::create("req");
       wait_for_grant();
       assert(req.randomize());

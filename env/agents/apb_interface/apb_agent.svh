@@ -2,7 +2,7 @@
 `define APB_AGENT_SVH_
 
 class apb_agent extends uvm_agent;
-  uvm_sequencer#(apb_seq_item) sequencer;
+  uvm_sequencer#(apb_transaction) sequencer;
   apb_driver driver;
   apb_monitor monitor;
 
@@ -14,7 +14,7 @@ class apb_agent extends uvm_agent;
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    sequencer = uvm_sequencer#(apb_seq_item)::type_id::create("sequencer", this);
+    sequencer = uvm_sequencer#(apb_transaction)::type_id::create("sequencer", this);
     driver = apb_driver::type_id::create("driver", this);
     monitor = apb_monitor::type_id::create("monitor", this);
   endfunction

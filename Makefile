@@ -4,7 +4,7 @@ ifeq ($(OS), Windows_NT)
 endif
 RD = rd /q /s
 
-SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv env/tb/apb_interface_assertions.sva
+SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv env/ref_model/apb_assertion.sv
 INCLUDES = tests tests/sequence_lib env env/agents/bus_interface env/agents/apb_interface
 TOP = tb_top
 

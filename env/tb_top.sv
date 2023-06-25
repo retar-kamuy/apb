@@ -1,5 +1,4 @@
 `include "uvm_macros.svh"
-`include "defines.svh"
 `include "prj_pkg.svh"
 
 module tb_top;

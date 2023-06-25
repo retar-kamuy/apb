@@ -9,7 +9,7 @@ class apb_scoreboard extends uvm_scoreboard;
     bit[3:0] act_pattern;
     bit exp_out;
 
-    uvm_analysis_imp #(apb_seq_item, apb_scoreboard) analysis_imp;
+    uvm_analysis_imp #(apb_transaction, apb_scoreboard) analysis_imp;
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
@@ -19,7 +19,7 @@ class apb_scoreboard extends uvm_scoreboard;
         //    `uvm_fatal("SCBD", "Did not get ref_pattern !")
     endfunction
 
-    function write(apb_seq_item item);
+    function write(apb_transaction item);
         `uvm_info("SCBD", $sformatf("in="), UVM_LOW)
         // act_pattern = act_pattern << 1 | item.in;
     

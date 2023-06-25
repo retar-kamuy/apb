@@ -1,4 +1,7 @@
-class apb_seq_item extends uvm_sequence_item;
+`ifndef APB_TRANSACTION_SVH_
+`define APB_TRANSACTION_SVH_
+
+class apb_transaction extends uvm_sequence_item;
         bit           [63:0]  address;
         int                   command;
   rand  bit           [31:0]  data;
@@ -7,7 +10,7 @@ class apb_seq_item extends uvm_sequence_item;
         int                   byte_enable_length;
   rand  bit           [3:0]   delay;              // num of cycles for which pready will be kept off
 
-  `uvm_object_utils_begin(apb_seq_item)
+  `uvm_object_utils_begin(apb_transaction)
     `uvm_field_int(data   , UVM_DEFAULT)
     `uvm_field_int(delay  , UVM_DEFAULT)
   `uvm_object_utils_end
@@ -19,7 +22,7 @@ class apb_seq_item extends uvm_sequence_item;
     `uvm_record_field("delay", delay);
   endfunction
 
-  function new(string name = "apb_seq_item");
+  function new(string name = "apb_transaction");
     super.new(name);
   endfunction
 
@@ -35,3 +38,5 @@ class apb_seq_item extends uvm_sequence_item;
   endfunction
 
 endclass
+
+`endif  // APB_TRANSACTION_SVH_
