@@ -4,8 +4,8 @@ ifeq ($(OS), Windows_NT)
 endif
 RD = rd /q /s
 
-SRCS = env/tb_top.sv env/tb/clk_rst_gen.sv src/apb.sv env/ref_model/apb_assertion.sv
-INCLUDES = tests tests/sequence_lib env env/agents/bus_interface env/agents/apb_interface
+SRCS = verif/tb/tb_top.sv verif/tb/clk_rst_gen.sv src/apb.sv verif/env/ref_model/apb_assertion.sv
+INCLUDES = verif/tests verif/tests/sequence_lib verif/env verif/env/agents/bus verif/env/agents/apb
 TOP = tb_top
 
 COVDIR = xsim.covdb
