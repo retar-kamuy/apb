@@ -8,22 +8,22 @@ interface bus_interface #(
   input clk,
   input rst_n
 );
-  logic                     bus_ena;
-  logic [DATA_WIDTH/8-1:0]  bus_wstb;
-  logic [ADDR_WIDTH-1:0]    bus_addr;
-  logic [DATA_WIDTH-1:0]    bus_wdata;
-  logic                     bus_wait;
-  logic [DATA_WIDTH-1:0]    bus_rdata;
-  logic                     bus_slverr;
+  logic                     en;
+  logic [DATA_WIDTH/8-1:0]  we;
+  logic [ADDR_WIDTH-1:0]    addr;
+  logic [DATA_WIDTH-1:0]    din;
+  logic                     busy;
+  logic [DATA_WIDTH-1:0]    dout;
+  logic                     err;
 
   clocking master_cb @(posedge clk);
-    output  bus_ena;
-    output  bus_wstb;
-    output  bus_addr;
-    output  bus_wdata;
-    input   bus_wait;
-    input   bus_rdata;
-    input   bus_slverr;
+    output  en;
+    output  we;
+    output  addr;
+    output  din;
+    input   busy;
+    input   dout;
+    input   err;
   endclocking
 
   modport master (
@@ -33,13 +33,13 @@ interface bus_interface #(
   );
 
   clocking slave_cb @(posedge clk);
-    input   bus_ena;
-    input   bus_wstb;
-    input   bus_addr;
-    input   bus_wdata;
-    output  bus_wait;
-    output  bus_rdata;
-    output  bus_slverr;
+    input   en;
+    input   we;
+    input   addr;
+    input   din;
+    output  busy;
+    output  dout;
+    output  err;
   endclocking
 
   modport slave (
@@ -49,13 +49,13 @@ interface bus_interface #(
   );
 
   clocking monitor_cb @(posedge clk);
-    input bus_ena;
-    input bus_wstb;
-    input bus_addr;
-    input bus_wdata;
-    input bus_wait;
-    input bus_rdata;
-    input bus_slverr;
+    input en;
+    input we;
+    input addr;
+    input din;
+    input busy;
+    input dout;
+    input err;
   endclocking
 
 modport monitor (clocking monitor_cb);

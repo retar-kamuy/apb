@@ -18,13 +18,13 @@ module apb #(
   input         [DATA_WIDTH-1:0]    prdata,
   input                             pslverr,
   // Local Inerface
-  input                             bus_ena,
-  input         [DATA_WIDTH/8-1:0]  bus_wstb,
-  input         [DATA_WIDTH-1:0]    bus_addr,
-  input         [DATA_WIDTH-1:0]    bus_wdata,
-  output  logic                     bus_wait,
-  output  logic [DATA_WIDTH-1:0]    bus_rdata,
-  output  logic                     bus_slverr
+  input                             en,
+  input         [DATA_WIDTH/8-1:0]  we,
+  input         [DATA_WIDTH-1:0]    addr,
+  input         [DATA_WIDTH-1:0]    din,
+  output  logic                     busy,
+  output  logic [DATA_WIDTH-1:0]    dout,
+  output  logic                     err
 );
   enum logic [1:0] {
     IDLE = 0,
@@ -46,9 +46,9 @@ module apb #(
     end else
       case (state)
         IDLE: begin
-          pipeline_inst <= bus_wstb;
-          pipeline_data <= bus_wdata;
-          pipeline_addr <= bus_addr;
+          pipeline_inst <= we;
+          pipeline_data <= din;
+          pipeline_addr <= addr;
         end
         SETUP: begin
           pipeline_inst <= (DATA_WIDTH/8)'(1'd0);
@@ -112,31 +112,31 @@ module apb #(
 
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn)
-      bus_rdata <= DATA_WIDTH'(1'd0);
+      dout <= DATA_WIDTH'(1'd0);
     else
       if (~(|pipeline_inst))
         if (penable & pready)
-          bus_rdata <= prdata;
+          dout <= prdata;
 
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
-      bus_wait <= 1'd0;
-      bus_slverr <= 1'd0;
+      busy <= 1'd0;
+      err <= 1'd0;
     end else
       case (state)
         IDLE: begin
-          bus_slverr <= 1'd0;
-          if (bus_ena)
-            bus_wait <= 1'd1;
+          err <= 1'd0;
+          if (en)
+            busy <= 1'd1;
         end
         ACCESS:
           if (pready) begin
-            bus_wait <= 1'd0;
-            bus_slverr <= pslverr;
+            busy <= 1'd0;
+            err <= pslverr;
           end
         default: begin
-          bus_wait <= bus_wait;
-          bus_slverr <= bus_slverr;
+          busy <= busy;
+          err <= err;
         end
       endcase
 
@@ -146,12 +146,12 @@ module apb #(
     else
       case (state)
         IDLE:
-          if (bus_ena)
+          if (en)
             state <= SETUP;
         SETUP:
           state <= ACCESS;
         ACCESS:
-          if (pready & bus_ena)
+          if (pready & en)
             state <= SETUP;
           else if (pready)
             state <= IDLE;

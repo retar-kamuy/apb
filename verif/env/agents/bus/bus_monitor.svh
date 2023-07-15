@@ -28,27 +28,27 @@ class bus_monitor extends uvm_monitor;
   endtask
 
   task collect_trans();
-    @(vif.monitor_cb.bus_ena or
-      vif.monitor_cb.bus_wstb or
-      vif.monitor_cb.bus_addr or
-      vif.monitor_cb.bus_wdata or
-      vif.monitor_cb.bus_wait or
-      vif.monitor_cb.bus_rdata or
-      vif.monitor_cb.bus_slverr
+    @(vif.monitor_cb.en or
+      vif.monitor_cb.we or
+      vif.monitor_cb.addr or
+      vif.monitor_cb.din or
+      vif.monitor_cb.busy or
+      vif.monitor_cb.dout or
+      vif.monitor_cb.err
     );
 
-    if (vif.monitor_cb.bus_ena) begin
-      act_trans.address = vif.slave_cb.bus_addr;
-      act_trans.command = |vif.monitor_cb.bus_wstb;
-      act_trans.byte_enable = vif.monitor_cb.bus_wstb;
+    if (vif.monitor_cb.en) begin
+      act_trans.address = vif.slave_cb.addr;
+      act_trans.command = |vif.monitor_cb.we;
+      act_trans.byte_enable = vif.monitor_cb.we;
 
-      wait(~vif.monitor_cb.bus_wait);
+      wait(~vif.monitor_cb.busy);
 
-      if (|vif.monitor_cb.bus_wstb)
-        act_trans.data = vif.monitor_cb.bus_wdata;
+      if (|vif.monitor_cb.we)
+        act_trans.data = vif.monitor_cb.din;
       else
-        act_trans.data = vif.monitor_cb.bus_rdata;
-      act_trans.response_status = vif.monitor_cb.bus_slverr;
+        act_trans.data = vif.monitor_cb.dout;
+      act_trans.response_status = vif.monitor_cb.err;
 
       `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2string()), UVM_LOW);
       // act_trans.print();

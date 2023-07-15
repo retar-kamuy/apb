@@ -38,13 +38,13 @@ module tb_top;
     .prdata     (apb_intf.prdata      ),
     .pslverr    (apb_intf.pslverr     ),
     // Local Inerface
-    .bus_ena    (bus_intf.bus_ena     ),
-    .bus_wstb   (bus_intf.bus_wstb    ),
-    .bus_addr   (bus_intf.bus_addr    ),
-    .bus_wdata  (bus_intf.bus_wdata   ),
-    .bus_wait   (bus_intf.bus_wait    ),
-    .bus_rdata  (bus_intf.bus_rdata   ),
-    .bus_slverr (bus_intf.bus_slverr  )
+    .en   (bus_intf.en    ),
+    .we   (bus_intf.we    ),
+    .addr (bus_intf.addr  ),
+    .din  (bus_intf.din   ),
+    .busy (bus_intf.busy  ),
+    .dout (bus_intf.dout  ),
+    .err  (bus_intf.err   )
   );
 
   initial begin

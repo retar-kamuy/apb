@@ -35,28 +35,28 @@ class bus_driver extends uvm_driver #(bus_transaction);
   endtask
 
   task drive(bus_transaction req);
-    wait(~vif.master_cb.bus_wait);
-    vif.master_cb.bus_ena <= 1;
-    vif.master_cb.bus_wstb <= req.byte_enable;
-    vif.master_cb.bus_addr <= req.address;
-    vif.master_cb.bus_wdata <= req.data;
+    wait(~vif.master_cb.busy);
+    vif.master_cb.en <= 1;
+    vif.master_cb.we <= req.byte_enable;
+    vif.master_cb.addr <= req.address;
+    vif.master_cb.din <= req.data;
     @(vif.master_cb);
-    vif.master_cb.bus_ena <= 0;
+    vif.master_cb.en <= 0;
     @(vif.master_cb);
   endtask
 
   task response(input bus_transaction req, output bus_transaction rsp);
-    wait(~vif.master_cb.bus_wait);
+    wait(~vif.master_cb.busy);
     rsp = bus_transaction::type_id::create("rsp");
     rsp.set_id_info(req);
-    rsp.response_status = vif.master_cb.bus_slverr == 0 ? 1 : -1;
+    rsp.response_status = vif.master_cb.err == 0 ? 1 : -1;
   endtask
 
   task reset();
-    vif.master_cb.bus_ena <= 0;
-    vif.master_cb.bus_wstb <= 0;
-    vif.master_cb.bus_addr <= 0;
-    vif.master_cb.bus_wdata <= 0;
+    vif.master_cb.en <= 0;
+    vif.master_cb.we <= 0;
+    vif.master_cb.addr <= 0;
+    vif.master_cb.din <= 0;
   endtask
 
 endclass
