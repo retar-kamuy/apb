@@ -1,29 +1,29 @@
-`ifndef BUS_MONITOR_SVH_
-`define BUS_MONITOR_SVH_
+`ifndef RAM_MONITOR_SVH_
+`define RAM_MONITOR_SVH_
 
-class bus_monitor extends uvm_monitor;
-  `uvm_component_utils(bus_monitor)
+class ram_monitor extends uvm_monitor;
+  `uvm_component_utils(ram_monitor)
 
-  uvm_analysis_port#(bus_transaction) bus_analysis_port;
-  bus_transaction act_trans;
-  virtual bus_interface vif;
+  uvm_analysis_port#(ram_transaction) ram_analysis_port;
+  ram_transaction act_trans;
+  virtual ram_interface vif;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
     act_trans = new();
-    bus_analysis_port = new("bus_analysis_port", this);
+    ram_analysis_port = new("ram_analysis_port", this);
   endfunction
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "bus_intf", vif))
+    if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_intf", vif))
       `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"});
   endfunction
 
   virtual task run_phase(uvm_phase phase);
     forever begin
       collect_trans();
-      bus_analysis_port.write(act_trans);
+      ram_analysis_port.write(act_trans);
     end
   endtask
 
@@ -57,4 +57,4 @@ class bus_monitor extends uvm_monitor;
 
 endclass
 
-`endif  // BUS_MONITOR_SVH_
+`endif  // RAM_MONITOR_SVH_

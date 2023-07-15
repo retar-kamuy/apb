@@ -1,9 +1,9 @@
 
-`ifndef BUS_COVERAGE
-`define BUS_COVERAGE
+`ifndef RAM_COVERAGE
+`define RAM_COVERAGE
 
-class bus_coverage extends uvm_subscriber #(bus_transaction);
-  `uvm_component_utils(bus_coverage)
+class ram_coverage extends uvm_subscriber #(ram_transaction);
+  `uvm_component_utils(ram_coverage)
 
   int           command;
   bit   [63:0]  address;
@@ -39,7 +39,7 @@ class bus_coverage extends uvm_subscriber #(bus_transaction);
     cg = new();
   endfunction
 
-    function void write(bus_transaction t);
+    function void write(ram_transaction t);
       `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG);
 
       command     = t.command;
@@ -60,4 +60,4 @@ class bus_coverage extends uvm_subscriber #(bus_transaction);
 
   endclass
 
-`endif  // BUS_COVERAGE
+`endif  // RAM_COVERAGE

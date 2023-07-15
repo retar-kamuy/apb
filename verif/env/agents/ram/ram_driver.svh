@@ -1,10 +1,10 @@
-`ifndef BUS_DRIVER_SVH_
-`define BUS_DRIVER_SVH_
+`ifndef RAM_DRIVER_SVH_
+`define RAM_DRIVER_SVH_
 
-class bus_driver extends uvm_driver #(bus_transaction);
-  virtual bus_interface vif;
+class ram_driver extends uvm_driver #(ram_transaction);
+  virtual ram_interface vif;
 
-  `uvm_component_utils(bus_driver)
+  `uvm_component_utils(ram_driver)
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
@@ -12,13 +12,13 @@ class bus_driver extends uvm_driver #(bus_transaction);
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual bus_interface)::get(this, "", "bus_intf", vif))
+    if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_intf", vif))
       `uvm_fatal("NO_VIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    bus_transaction req;
-    bus_transaction rsp;
+    ram_transaction req;
+    ram_transaction rsp;
 
     reset();
     wait(vif.rst_n);
@@ -34,7 +34,7 @@ class bus_driver extends uvm_driver #(bus_transaction);
     end
   endtask
 
-  task drive(bus_transaction req);
+  task drive(ram_transaction req);
     wait(~vif.master_cb.busy);
     vif.master_cb.en <= 1;
     vif.master_cb.we <= req.byte_enable;
@@ -45,9 +45,9 @@ class bus_driver extends uvm_driver #(bus_transaction);
     @(vif.master_cb);
   endtask
 
-  task response(input bus_transaction req, output bus_transaction rsp);
+  task response(input ram_transaction req, output ram_transaction rsp);
     wait(~vif.master_cb.busy);
-    rsp = bus_transaction::type_id::create("rsp");
+    rsp = ram_transaction::type_id::create("rsp");
     rsp.set_id_info(req);
     rsp.response_status = vif.master_cb.err == 0 ? 1 : -1;
   endtask
@@ -61,4 +61,4 @@ class bus_driver extends uvm_driver #(bus_transaction);
 
 endclass
 
-`endif  // BUS_DRIVER_SVH_
+`endif  // RAM_DRIVER_SVH_

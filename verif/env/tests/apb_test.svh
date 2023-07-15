@@ -3,7 +3,7 @@ class apb_base_test extends uvm_test;
 
   apb_env env;
   apb_sequence apb_seq;
-  bus_sequence bus_seq;
+  ram_sequence ram_seq;
 
   function new(string name = "apb_base_test", uvm_component parent = null);
     super.new(name, parent);
@@ -14,14 +14,14 @@ class apb_base_test extends uvm_test;
 
     env = apb_env::type_id::create("env", this);
     apb_seq = apb_sequence::type_id::create("apb_seq");
-    bus_seq = bus_sequence::type_id::create("bus_seq");
+    ram_seq = ram_sequence::type_id::create("ram_seq");
   endfunction
 
   task run_phase(uvm_phase phase);
     phase.raise_objection(this);
     fork
       apb_seq.start(env.apb_agnt.sequencer);
-      bus_seq.start(env.bus_agnt.sequencer);
+      ram_seq.start(env.ram_agnt.sequencer);
     join_any
     phase.drop_objection(this);
   endtask

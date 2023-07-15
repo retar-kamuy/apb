@@ -1,17 +1,17 @@
-`ifndef BUS_SEQUENCE_SVH_
-`define BUS_SEQUENCE_SVH_
+`ifndef RAM_SEQUENCE_SVH_
+`define RAM_SEQUENCE_SVH_
 
-// class bus_sequence extends uvm_sequence;
-class bus_sequence #(type REQ=bus_transaction, type RSP=bus_transaction) extends uvm_sequence #(REQ, RSP);
-  `uvm_object_utils(bus_sequence)
+// class ram_sequence extends uvm_sequence;
+class ram_sequence #(type REQ=ram_transaction, type RSP=ram_transaction) extends uvm_sequence #(REQ, RSP);
+  `uvm_object_utils(ram_sequence)
 
-  function new(string name="bus_sequence");
+  function new(string name="ram_sequence");
     super.new(name);
   endfunction
 
   virtual task body();
     for (int i = 0; i < 256; i++) begin
-      // bus_transaction req = bus_transaction::type_id::create("req");
+      // ram_transaction req = ram_transaction::type_id::create("req");
       REQ req = REQ::type_id::create("req");
       wait_for_grant();
       assert(req.randomize());
@@ -28,4 +28,4 @@ class bus_sequence #(type REQ=bus_transaction, type RSP=bus_transaction) extends
 
 endclass
 
-`endif  // BUS_SEQUENCE_SVH_
+`endif  // RAM_SEQUENCE_SVH_

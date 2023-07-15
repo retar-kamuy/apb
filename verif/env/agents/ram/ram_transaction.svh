@@ -1,14 +1,14 @@
-`ifndef BUS_TRANSACTION_SVH_
-`define BUS_TRANSACTION_SVH_
+`ifndef RAM_TRANSACTION_SVH_
+`define RAM_TRANSACTION_SVH_
 
-class bus_transaction extends uvm_sequence_item;
+class ram_transaction extends uvm_sequence_item;
   rand  bit           [63:0]  address;
   rand  int                   command;
   rand  bit           [31:0]  data;
   rand  bit           [3:0]   byte_enable;
         int                   response_status;
 
-  `uvm_object_utils_begin(bus_transaction)
+  `uvm_object_utils_begin(ram_transaction)
     `uvm_field_int(address          , UVM_DEFAULT)
     `uvm_field_int(command          , UVM_DEFAULT)
     `uvm_field_int(data             , UVM_DEFAULT)
@@ -16,7 +16,7 @@ class bus_transaction extends uvm_sequence_item;
     `uvm_field_int(response_status  , UVM_DEFAULT)
   `uvm_object_utils_end
 
-  function new(string name = "bus_transaction");
+  function new(string name = "ram_transaction");
     super.new(name);
   endfunction
 
@@ -48,4 +48,4 @@ class bus_transaction extends uvm_sequence_item;
 
 endclass
 
-`endif  // BUS_TRANSACTION_SVH_
+`endif  // RAM_TRANSACTION_SVH_

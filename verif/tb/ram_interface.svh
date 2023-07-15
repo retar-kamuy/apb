@@ -1,7 +1,7 @@
-`ifndef BUS_INTERFACE_SVH_
-`define BUS_INTERFACE_SVH_
+`ifndef RAM_INTERFACE_SVH_
+`define RAM_INTERFACE_SVH_
 
-interface bus_interface #(
+interface ram_interface #(
   parameter ADDR_WIDTH = 32,
   parameter DATA_WIDTH = 32
 ) (
@@ -62,4 +62,4 @@ modport monitor (clocking monitor_cb);
 
 endinterface
 
-`endif  // BUS_INTERFACE_SVH_
+`endif  // RAM_INTERFACE_SVH_

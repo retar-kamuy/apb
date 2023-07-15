@@ -9,7 +9,7 @@ module tb_top;
   logic rst_n;
 
   apb_interface apb_intf (clk, rst_n);
-  bus_interface bus_intf (clk, rst_n);
+  ram_interface ram_intf (clk, rst_n);
 
   clk_rst_gen #(
     .CLK_PERIOD(10)
@@ -38,18 +38,18 @@ module tb_top;
     .prdata     (apb_intf.prdata      ),
     .pslverr    (apb_intf.pslverr     ),
     // Local Inerface
-    .en   (bus_intf.en    ),
-    .we   (bus_intf.we    ),
-    .addr (bus_intf.addr  ),
-    .din  (bus_intf.din   ),
-    .busy (bus_intf.busy  ),
-    .dout (bus_intf.dout  ),
-    .err  (bus_intf.err   )
+    .en         (ram_intf.en          ),
+    .we         (ram_intf.we          ),
+    .addr       (ram_intf.addr        ),
+    .din        (ram_intf.din         ),
+    .busy       (ram_intf.busy        ),
+    .dout       (ram_intf.dout        ),
+    .err        (ram_intf.err         )
   );
 
   initial begin
     uvm_config_db#(virtual apb_interface)::set(uvm_root::get(), "*", "apb_intf", apb_intf);
-    uvm_config_db#(virtual bus_interface)::set(uvm_root::get(), "*", "bus_intf", bus_intf);
+    uvm_config_db#(virtual ram_interface)::set(uvm_root::get(), "*", "ram_intf", ram_intf);
     $dumpfile("wave.vcd"); $dumpvars;
   end
 
