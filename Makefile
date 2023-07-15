@@ -5,7 +5,7 @@ endif
 RD = rd /q /s
 
 SRCS = verif/tb/tb_top.sv verif/tb/clk_rst_gen.sv src/apb.sv verif/env/ref_model/apb_assertion.sv
-INCLUDES = verif/tests verif/tests/sequence_lib verif/env verif/env/agents/bus verif/env/agents/apb
+INCLUDES = verif/tests verif/tests/sequence_lib verif/env verif/env/agents/ram verif/env/agents/apb
 TOP = tb_top
 
 COVDIR = xsim.covdb
@@ -35,6 +35,6 @@ clean:
 ifeq ("$(wildcard xsim.dir"), "xsim.dir")
 	$(RD) xsim.dir
 endif
-	$(RM) xvlog.pb xelab.pb
+	$(RM) xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
 	$(RM) xsim_*.backup.* xsim.jou *.wdb
 	$(RM) *.log *.vcd

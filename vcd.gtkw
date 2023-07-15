@@ -17,22 +17,22 @@
 [sst_expanded] 1
 [sst_vpaned_height] 283
 @200
--bus_interface
+-ram_interface
 @28
-tb_top.bus_intf.rst_n
-tb_top.bus_intf.clk
+tb_top.ram_intf.rst_n
+tb_top.ram_intf.clk
 @22
-tb_top.bus_intf.bus_addr[31:0]
+tb_top.ram_intf.ram_addr[31:0]
 @28
-tb_top.bus_intf.bus_ena
-tb_top.bus_intf.bus_wstb[3:0]
+tb_top.ram_intf.ram_ena
+tb_top.ram_intf.ram_wstb[3:0]
 @22
-tb_top.bus_intf.bus_wdata[31:0]
-tb_top.bus_intf.bus_rdata[31:0]
+tb_top.ram_intf.ram_wdata[31:0]
+tb_top.ram_intf.ram_rdata[31:0]
 @29
-tb_top.bus_intf.bus_wait
+tb_top.ram_intf.ram_wait
 @28
-tb_top.bus_intf.bus_slverr
+tb_top.ram_intf.ram_slverr
 @200
 -apb_interface
 @28
@@ -59,7 +59,7 @@ tb_top.apb_intf.pnse
 tb_top.u_apb.presetn
 tb_top.u_apb.pclk
 @2028
-^1 /mnt/c/Repositories/apb/filter_state.gtkw
+^1 /mnt/c/Repositories/apb/vcd_filter_state.gtkw
 tb_top.u_apb.state[1:0]
 @28
 tb_top.u_apb.pipeline_inst[3:0]
