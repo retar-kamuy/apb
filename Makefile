@@ -19,21 +19,21 @@ build: $(SRCS)
 
 test:
 ifeq ("$(wildcard xsim.covdb"), "xsim.covdb")
-	$(RD) xsim.covdb
+	$(RM) xsim.covdb
 	mkdir xsim.covdb
 endif
 	xsim $(TOP) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\"
 
 cover:
 ifeq ("$(wildcard $(REPORT_DIR)"), "$(REPORT_DIR)")
-	$(RD) $(REPORT_DIR)
-	mkdir $(REPORT_DIR)
+	$(RM) $(REPORT_DIR)
 endif
+	mkdir -p $(REPORT_DIR)
 	xcrg -dir $(COVDIR) -report_dir $(REPORT_DIR)/cov -report_format html
 
 clean:
 ifeq ("$(wildcard xsim.dir"), "xsim.dir")
-	$(RD) xsim.dir
+	$(RM) xsim.dir
 endif
 	$(RM) xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
 	$(RM) xsim_*.backup.* xsim.jou *.wdb

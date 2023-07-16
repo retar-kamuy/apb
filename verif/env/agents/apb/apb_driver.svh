@@ -10,7 +10,7 @@ class apb_driver extends uvm_driver #(apb_transaction);
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual apb_interface)::get(this, "", "apb_intf", vif))
+    if (!uvm_config_db#(virtual apb_interface)::get(this, "", "apb_if", vif))
       `uvm_fatal("NO_VIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
   endfunction
 

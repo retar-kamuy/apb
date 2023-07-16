@@ -16,7 +16,7 @@ class ram_monitor extends uvm_monitor;
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_intf", vif))
+    if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_if", vif))
       `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"});
   endfunction
 

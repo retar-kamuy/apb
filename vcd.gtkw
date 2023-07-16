@@ -1,17 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.115 (w)1999-2023 BSI
-[*] Sun Jun 11 13:56:50 2023
+[*] Sun Jul 16 02:13:12 2023
 [*]
-[dumpfile] "/mnt/c/Repositories/apb/wave.vcd"
-[dumpfile_mtime] "Sun Jun 11 13:56:23 2023"
-[dumpfile_size] 39049
-[savefile] "/mnt/c/Repositories/apb/apb.gtkw"
+[dumpfile] "/mnt/c/Users/Hoshi/Repositories/apb/wave.vcd"
+[dumpfile_mtime] "Sun Jul 16 02:08:33 2023"
+[dumpfile_size] 9215
+[savefile] "/mnt/c/Users/Hoshi/Repositories/apb/vcd.gtkw"
 [timestart] 0
 [size] 1908 975
 [pos] -1 -1
-*-16.619490 105000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.528344 105000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_top.
-[treeopen] tb_top.apb_intf.
+[treeopen] tb_top.apb_if.
+[treeopen] tb_top.u_apb.
 [sst_width] 214
 [signals_width] 182
 [sst_expanded] 1
@@ -19,47 +20,56 @@
 @200
 -ram_interface
 @28
-tb_top.ram_intf.rst_n
-tb_top.ram_intf.clk
+tb_top.ram_if.rst_n
+tb_top.ram_if.clk
 @22
-tb_top.ram_intf.ram_addr[31:0]
+tb_top.ram_if.addr[31:0]
 @28
-tb_top.ram_intf.ram_ena
-tb_top.ram_intf.ram_wstb[3:0]
+tb_top.ram_if.en
 @22
-tb_top.ram_intf.ram_wdata[31:0]
-tb_top.ram_intf.ram_rdata[31:0]
-@29
-tb_top.ram_intf.ram_wait
+tb_top.ram_if.we[3:0]
+tb_top.ram_if.din[31:0]
+tb_top.ram_if.dout[31:0]
 @28
-tb_top.ram_intf.ram_slverr
+tb_top.ram_if.busy
+tb_top.ram_if.err
 @200
 -apb_interface
 @28
-tb_top.apb_intf.pclk
+tb_top.apb_if.presetn
+tb_top.apb_if.pclk
 @22
-tb_top.apb_intf.paddr[31:0]
+tb_top.apb_if.paddr[31:0]
 @28
-tb_top.apb_intf.pwrite
-tb_top.apb_intf.psel
-tb_top.apb_intf.penable
-tb_top.apb_intf.pstrb[3:0]
+tb_top.apb_if.psel
+@29
+tb_top.apb_if.penable
+@28
+tb_top.apb_if.pwrite
+tb_top.apb_if.pstrb[3:0]
 @22
-tb_top.apb_intf.pwdata[31:0]
-tb_top.apb_intf.prdata[31:0]
+tb_top.apb_if.pwdata[31:0]
+tb_top.apb_if.prdata[31:0]
 @28
-tb_top.apb_intf.pready
-tb_top.apb_intf.pprot[2:0]
-tb_top.apb_intf.presetn
-tb_top.apb_intf.pslverr
-tb_top.apb_intf.pnse
+tb_top.apb_if.pready
+tb_top.apb_if.pprot[2:0]
+tb_top.apb_if.pslverr
+tb_top.apb_if.pnse
+@200
+-apb_assertion
+@22
+tb_top.u_apb.apb_sva_inst.symb_addr[31:0]
+tb_top.u_apb.apb_sva_inst.winfo_addr[31:0]
+tb_top.u_apb.apb_sva_inst.winfo_din[31:0]
+@24
+tb_top.u_apb.apb_sva_inst.winfo_num[31:0]
 @200
 -apb
 @28
 tb_top.u_apb.presetn
 tb_top.u_apb.pclk
 @2028
-^1 /mnt/c/Repositories/apb/vcd_filter_state.gtkw
+^1 /mnt/c/Users/Hoshi/Repositories/apb/vcd_filter_state.gtkw
 tb_top.u_apb.state[1:0]
 @28
 tb_top.u_apb.pipeline_inst[3:0]
