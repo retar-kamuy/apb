@@ -94,9 +94,9 @@ module apb #(
           if (pready) begin
             psel <= 1'd0;
             penable <= 1'd0;
+            pwrite <= 1'd0;
           end
           else begin
-            psel <= 1'd1;
             penable <= 1'd1;
           end
         end

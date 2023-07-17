@@ -1,68 +1,111 @@
 [*]
 [*] GTKWave Analyzer v3.3.115 (w)1999-2023 BSI
-[*] Sun Jul 16 02:13:12 2023
+[*] Mon Jul 17 13:35:40 2023
 [*]
 [dumpfile] "/mnt/c/Users/Hoshi/Repositories/apb/wave.vcd"
-[dumpfile_mtime] "Sun Jul 16 02:08:33 2023"
-[dumpfile_size] 9215
+[dumpfile_mtime] "Mon Jul 17 13:35:10 2023"
+[dumpfile_size] 442276
 [savefile] "/mnt/c/Users/Hoshi/Repositories/apb/vcd.gtkw"
 [timestart] 0
 [size] 1908 975
 [pos] -1 -1
-*-15.528344 105000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.456105 109900 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_top.
 [treeopen] tb_top.apb_if.
 [treeopen] tb_top.u_apb.
+[treeopen] tb_top.u_apb.apb_sva_inst.
 [sst_width] 214
-[signals_width] 182
+[signals_width] 285
 [sst_expanded] 1
 [sst_vpaned_height] 283
 @200
 -ram_interface
 @28
+[color] 7
 tb_top.ram_if.rst_n
+[color] 7
 tb_top.ram_if.clk
 @22
+[color] 7
 tb_top.ram_if.addr[31:0]
 @28
+[color] 7
 tb_top.ram_if.en
 @22
+[color] 7
 tb_top.ram_if.we[3:0]
+[color] 7
 tb_top.ram_if.din[31:0]
+[color] 7
 tb_top.ram_if.dout[31:0]
 @28
+[color] 7
 tb_top.ram_if.busy
+[color] 7
 tb_top.ram_if.err
 @200
 -apb_interface
 @28
+[color] 2
 tb_top.apb_if.presetn
+[color] 2
 tb_top.apb_if.pclk
 @22
+[color] 2
 tb_top.apb_if.paddr[31:0]
 @28
+[color] 2
 tb_top.apb_if.psel
-@29
+[color] 2
 tb_top.apb_if.penable
-@28
+[color] 2
 tb_top.apb_if.pwrite
+[color] 2
 tb_top.apb_if.pstrb[3:0]
 @22
+[color] 2
 tb_top.apb_if.pwdata[31:0]
+[color] 2
 tb_top.apb_if.prdata[31:0]
 @28
+[color] 2
 tb_top.apb_if.pready
+[color] 2
 tb_top.apb_if.pprot[2:0]
+[color] 2
 tb_top.apb_if.pslverr
+[color] 2
 tb_top.apb_if.pnse
 @200
 -apb_assertion
+@420
+tb_top.u_apb.apb_sva_inst.w_trans_num[31:0]
+tb_top.u_apb.apb_sva_inst.r_trans_num[31:0]
+@28
+tb_top.u_apb.apb_sva_inst.w_seen
+tb_top.u_apb.apb_sva_inst.r_seen
+tb_top.u_apb.apb_sva_inst.trans_done
 @22
-tb_top.u_apb.apb_sva_inst.symb_addr[31:0]
-tb_top.u_apb.apb_sva_inst.winfo_addr[31:0]
-tb_top.u_apb.apb_sva_inst.winfo_din[31:0]
-@24
-tb_top.u_apb.apb_sva_inst.winfo_num[31:0]
+tb_top.u_apb.apb_sva_inst.symb_paddr[31:0]
+@29
+tb_top.u_apb.apb_sva_inst.symb_command
+@22
+tb_top.u_apb.apb_sva_inst.symb_pwdata[31:0]
+tb_top.u_apb.apb_sva_inst.symb_dout[31:0]
+tb_top.u_apb.apb_sva_inst.addr[31:0]
+tb_top.u_apb.apb_sva_inst.din[31:0]
+tb_top.u_apb.apb_sva_inst.dout[31:0]
+tb_top.u_apb.apb_sva_inst.paddr[31:0]
+@28
+tb_top.u_apb.apb_sva_inst.penable
+@22
+tb_top.u_apb.apb_sva_inst.prdata[31:0]
+@28
+tb_top.u_apb.apb_sva_inst.pready
+tb_top.u_apb.apb_sva_inst.psel
+@22
+tb_top.u_apb.apb_sva_inst.pstrb[3:0]
+tb_top.u_apb.apb_sva_inst.pwdata[31:0]
 @200
 -apb
 @28

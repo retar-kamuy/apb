@@ -39,6 +39,7 @@ class apb_driver extends uvm_driver #(apb_transaction);
     wait(vif.slave_cb.psel);
     repeat(req.delay) @(vif.slave_cb);
 
+    vif.slave_cb.prdata <= req.data;
     vif.slave_cb.pready <= 1;
     `uvm_info(get_full_name(), $sformatf("PREADY ASSERT FROM DRIVER"), UVM_LOW);
     @(vif.slave_cb);

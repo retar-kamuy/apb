@@ -27,6 +27,7 @@ class apb_transaction extends uvm_sequence_item;
   endfunction
 
   constraint c1 {
+    data  inside  {[0:32'hFFFF_FFFF]};
     delay inside {[0:4]};
   }
 
