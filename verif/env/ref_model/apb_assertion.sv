@@ -1,51 +1,30 @@
-class WriteTransaction;
-  int address;
-  bit command;
-  int data;
-  bit [3:0] byte_enable;
+class TransactionQueue;
+  localparam DATA_WIDTH = 32;
 
-  function new (int addr, bit cmd, int d, bit [3:0] be);
-    this.address = addr;
-    this.command = cmd;
-    this.data = d;
-    this.byte_enable = be;
+  int len;
+
+  int addr_queue[$];
+  bit [DATA_WIDTH/8-1:0] we_queue[$];
+  int data_queue[$];
+
+  function new ();
+    this.len = 0;
   endfunction
 
-  function int get_address ();
-    return this.address;
+  function int get_len ();
+    return this.len;
   endfunction
 
-  function bit get_command ();
-    return this.command;
+  function void push_back(int addr, int data);
+    this.addr_queue.push_back(addr);
+    this.data_queue.push_back(data);
+    this.len++;
   endfunction
 
-  function int get_data ();
-    return this.data;
-  endfunction
-
-endclass
-
-class ReadTransaction;
-  int address;
-  bit command;
-  int data;
-
-  function new (int addr, bit cmd, int d);
-    this.address = addr;
-    this.command = cmd;
-    this.data = d;
-  endfunction
-
-  function int get_address ();
-    return this.address;
-  endfunction
-
-  function bit get_command ();
-    return this.command;
-  endfunction
-
-  function int get_data ();
-    return this.data;
+  function void pop_front(output int addr, output int data);
+    addr = this.addr_queue.pop_front();
+    data = this.data_queue.pop_front();
+    this.len--;
   endfunction
 
 endclass
@@ -79,106 +58,87 @@ module apb_assertions #(
   input                     err 
 );
 
-  int w_trans_num = 0;
-  int r_trans_num = 0;
-  WriteTransaction winfo[$];
-  ReadTransaction rinfo[$];
+  TransactionQueue winfo;
+  TransactionQueue rinfo;
+  int exp_addr;
+  int exp_data;
 
-  bit trans_done;
   initial begin
-    trans_done = 0;
+    winfo = new;
+    rinfo = new;
+  end
+
+  bit winfo_seen, rinfo_seen;
+  assign winfo_seen = penable & psel & pwrite;
+  assign rinfo_seen = penable & psel & ~pwrite;
+
+  bit winfo_done, rinfo_done;
+  initial begin
+    winfo_done = 0;
+    rinfo_done = 0;
     forever begin
-      @(psel or penable or pready);
-      wait(psel && penable && !pready);
-        trans_done = 0;
-      wait(psel && penable && pready);
-      wait(!psel && !penable && !pready);
-        trans_done = 1;
+      @(posedge winfo_seen or posedge rinfo_seen);
+        winfo_done = 0;
+        rinfo_done = 0;
+      if (winfo_seen) begin
+        @(negedge pready);
+        winfo_done = 1;
+      end else if (rinfo_seen) begin
+        @(negedge pready);
+        rinfo_done = 1;
+      end
     end
   end
+
+  initial
+    forever begin
+      @(winfo_done);
+      wait(winfo_done);
+        winfo.pop_front(exp_addr, exp_data);
+    end
+
+  initial
+    forever begin
+      @(rinfo_done);
+      wait (rinfo_done);
+      rinfo.pop_front(exp_addr, exp_data);
+    end
+
+  initial
+    forever begin
+      @(en or busy);
+      wait (en && (!busy));
+      if (|we)
+        winfo.push_back(addr, din);
+      else begin
+        @(posedge pready)
+        rinfo.push_back(addr, prdata);
+      end
+    end
 
   prop_transfer_done_is_pulse: assert property (
     @(posedge pclk) disable iff (!presetn)
     psel && penable && pready |=> !psel && !penable && !pwrite
-  ) else $fatal(1, "prop_transfer_done_is_pulse : NG");
-
-  WriteTransaction w_trans;
-  bit cmd;
-
-  initial
-    forever begin
-      @(en or we or busy);
-      if (en && (!busy) && (|we)) begin
-        cmd = (|we);
-        w_trans = new (addr, cmd, din, we);
-        winfo.push_back(w_trans);
-        w_trans_num++;
-      end
-    end
-
-  ReadTransaction r_trans;
-
-  initial
-    forever begin
-      @(en or we or busy or psel or penable or pready);
-      wait (en & ~(|we));
-      cmd = (|we);
-      wait (!busy);
-      //@(psel or penable or pready)
-      wait (psel);
-      wait (penable);
-      wait (pready);
-      r_trans = new (addr, cmd, prdata);
-      rinfo.push_back(r_trans);
-      r_trans_num++;
-    end
-
-  int symb_paddr;
-  bit symb_command;
-  int symb_pwdata;
-  int symb_dout;
-
-  bit w_seen;
-  assign w_seen = penable & psel & pwrite;
-  bit r_seen;
-  assign r_seen = penable & psel & ~pwrite;
-
-  WriteTransaction w_tmp;
-
-  initial
-    forever begin
-      @(w_seen);
-      if (w_seen) begin
-        w_tmp = winfo.pop_front();
-        symb_paddr = w_tmp.get_address();
-        symb_command = w_tmp.get_command();
-        symb_pwdata = w_tmp.get_data();
-        w_trans_num--;
-      end
-    end
-
-  ReadTransaction r_tmp;
-
-  initial
-    forever begin
-      @(r_seen or pready);
-      wait (r_seen);
-      wait (pready);
-      r_tmp = rinfo.pop_front();
-      symb_paddr = r_tmp.get_address();
-      symb_command = r_tmp.get_command();
-      symb_dout = r_tmp.get_data();
-      r_trans_num--;
-    end
+  ) else $fatal(1, "prop_transfer_done_is_pulse : NG : psel=%b, penable=%b, pwrite=%b", psel, penable, pwrite);
 
   prop_write_trans: assert property (
     @(posedge pclk) disable iff (!presetn)
-    $rose(trans_done) && pwrite |=> (symb_paddr === paddr) && (symb_pwdata === pwdata)
-  ) else $fatal(1, "prop_write_trans : NG");
+    winfo_done && $fell(pwrite) |-> (exp_addr === paddr) && (exp_data === pwdata)
+  ) else begin
+    if (exp_addr !== paddr)
+      $fatal(1, "prop_write_trans : NG : addr=%x, exp=%x", paddr, exp_addr);
+    else
+      $fatal(1, "prop_write_trans : NG : data=%x, exp=%x", pwdata, exp_data);
+  end
 
   prop_read_trans: assert property (
     @(posedge pclk) disable iff (!presetn)
-    $rose(trans_done) && !symb_command |-> (symb_paddr === paddr) && (symb_dout === dout)
-  ) else $fatal(1, "prop_read_trans : NG");
+    rinfo_done && $fell(busy) |-> (exp_addr === paddr) && (exp_data === dout)
+  ) else begin
+    if (exp_addr !== paddr)
+      $fatal(1, "prop_read_trans : NG : addr=%x, exp=%x", paddr, exp_addr);
+    else
+      $fatal(1, "prop_read_trans : NG : data=%x, exp=%x", dout, exp_data);
+  end
 
 endmodule
