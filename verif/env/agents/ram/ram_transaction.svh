@@ -2,11 +2,11 @@
 `define RAM_TRANSACTION_SVH_
 
 class ram_transaction extends uvm_sequence_item;
-  rand  bit           [63:0]  address;
-  rand  int                   command;
-  rand  bit           [31:0]  data;
-  rand  bit           [3:0]   byte_enable;
-        int                   response_status;
+  rand  bit [63:0]  address;
+  rand  int         command;
+  rand  bit [31:0]  data;
+  rand  bit [3:0]   byte_enable;
+        int         response_status;
 
   `uvm_object_utils_begin(ram_transaction)
     `uvm_field_int(address          , UVM_DEFAULT)
