@@ -2,7 +2,7 @@
 `ifndef RAM_COVERAGE
 `define RAM_COVERAGE
 
-class ram_coverage extends uvm_subscriber #(ram_transaction);
+class ram_coverage extends uvm_subscriber #(apb_transaction);
   `uvm_component_utils(ram_coverage)
 
   int           command;
@@ -39,7 +39,7 @@ class ram_coverage extends uvm_subscriber #(ram_transaction);
     cg = new();
   endfunction
 
-    function void write(ram_transaction t);
+    function void write(apb_transaction t);
       `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG);
 
       command     = t.command;

@@ -1,9 +1,9 @@
 class apb_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(apb_scoreboard)
 
-  uvm_analysis_export #(ram_transaction) in_export;
+  uvm_analysis_export #(apb_transaction) in_export;
   uvm_analysis_export #(apb_transaction) out_export;
-  uvm_tlm_analysis_fifo #(ram_transaction) in_fifo;
+  uvm_tlm_analysis_fifo #(apb_transaction) in_fifo;
   uvm_tlm_analysis_fifo #(apb_transaction) out_fifo;
 
   function new(string name, uvm_component parent);
@@ -25,7 +25,7 @@ class apb_scoreboard extends uvm_scoreboard;
     out_export.connect(out_fifo.analysis_export);
   endfunction
 
-  // function write(ram_transaction req);
+  // function write(apb_transaction req);
   //   `uvm_info(get_full_name(), $sformatf("in="), UVM_LOW)
     // act_pattern = act_pattern << 1 | item.in;
 
@@ -46,13 +46,13 @@ class apb_scoreboard extends uvm_scoreboard;
   // endfunction
 
   task run_phase(uvm_phase phase);
-    ram_transaction exp_trans;
+    apb_transaction exp_trans;
     apb_transaction act_trans;
     forever begin
       in_fifo.get(exp_trans);
       out_fifo.get(act_trans);
       if (!exp_trans.compare(act_trans)) begin
-        `uvm_error(get_full_name(), $sformatf("%s does not match %s", exp_trans.sprint(), act_trans.sprint()));
+        `uvm_error(get_full_name(), $sformatf("%s does not match\n%s", exp_trans.sprint(), act_trans.sprint()));
       end
     end
   endtask

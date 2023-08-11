@@ -4,11 +4,11 @@
 class ram_agent extends uvm_agent;
   `uvm_component_utils(ram_agent)
 
-  uvm_sequencer#(ram_transaction) sequencer;
+  uvm_sequencer#(apb_transaction) sequencer;
   ram_driver driver;
   ram_monitor monitor;
 
-  uvm_analysis_port #(ram_transaction) analysis_port;
+  uvm_analysis_port #(apb_transaction) analysis_port;
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
@@ -16,7 +16,7 @@ class ram_agent extends uvm_agent;
 
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
-    sequencer = uvm_sequencer#(ram_transaction)::type_id::create("sequencer", this);
+    sequencer = uvm_sequencer#(apb_transaction)::type_id::create("sequencer", this);
     driver = ram_driver::type_id::create("driver", this);
     monitor = ram_monitor::type_id::create("monitor", this);
     analysis_port = new("analysis_port", this);

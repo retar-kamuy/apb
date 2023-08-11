@@ -1,6 +1,7 @@
 {
-    "verilog.linting.linter": "verilator",
+    "verilog.linting.linter": "slang",
     "verilog.linting.verilator.arguments": "--timing -Wall",
     "verilog.linting.verilator.runAtFileLocation": false,
-    "verilog.linting.verilator.useWSL": true
+    "verilog.linting.verilator.useWSL": false,
+    "verilog.linting.slang.arguments": "--single-unit -Weverything -I /opt/Xilinx/Vivado/2023.1/data/system_verilog/uvm_1.2 /opt/Xilinx/Vivado/2023.1/data/system_verilog/uvm_1.2/xlnx_uvm_package.sv -f filelist.f"
 }

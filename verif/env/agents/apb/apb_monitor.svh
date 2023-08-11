@@ -23,51 +23,23 @@ class apb_monitor extends uvm_monitor;
   virtual task run_phase(uvm_phase phase);
     forever begin
       act_trans = apb_transaction::type_id::create("act_trans");
-      //act_trans.num_of_wait_cycles = 1;
+      // act_trans.num_of_wait_cycles = 1;
       ev = ev_pool.get("mon_ev");
       ev.trigger(act_trans);
       collect_trans();
-      analysis_port.write(act_trans);
+      // if (vif.monitor_cb.psel && vif.monitor_cb.penable) begin
+      //   analysis_port.write(act_trans);
+      // end
     end
   endtask
 
-//  task collect_trans();
-//    @(vif.monitor_cb.psel or
-//      vif.monitor_cb.pwrite or
-//      vif.monitor_cb.penable or
-//      vif.monitor_cb.pready);z
-//    wait (vif.monitor_cb.psel && vif.monitor_cb.penable && vif.monitor_cb.pready);
-//    if (vif.monitor_cb.pwrite) begin
-//      act_trans.address = vif.monitor_cb.paddr;
-//      act_trans.command = vif.monitor_cb.pwrite;
-//      act_trans.byte_enable = 4'(vif.monitor_cb.pwrite);
-//      act_trans.data = vif.monitor_cb.pwdata;
-//      act_trans.response_status = vif.monitor_cb.pslverr;
-//      `uvm_info(get_full_name(), $sformatf("READ TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
-//    end
-//    else
-//      `uvm_info(get_full_name(), $sformatf("WRITE TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
-//
-//    `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
-//    // act_trans.print();
-//  endtask
-
   task collect_trans();
-    @(vif.monitor_cb.psel or
-      vif.monitor_cb.pwrite or
-      vif.monitor_cb.penable or
-      vif.monitor_cb.pready or
-      vif.monitor_cb.prdata);
+    @(vif.monitor_cb.penable or vif.monitor_cb.pready);
 
-    if (vif.monitor_cb.psel) begin
-      act_trans.command = vif.monitor_cb.pwrite ? 1 : 0;
-
-      wait(vif.monitor_cb.penable);
-
-      wait(vif.monitor_cb.pready);
+    if (vif.monitor_cb.psel && vif.monitor_cb.penable && vif.monitor_cb.pready) begin
       act_trans.address = vif.monitor_cb.paddr;
       act_trans.command = vif.monitor_cb.pwrite;
-      act_trans.byte_enable = 4'(vif.monitor_cb.pwrite);
+      act_trans.byte_enable = 4'(vif.monitor_cb.pstrb);
       act_trans.data = vif.monitor_cb.pwdata;
       act_trans.response_status = vif.monitor_cb.pslverr;
 
@@ -75,6 +47,7 @@ class apb_monitor extends uvm_monitor;
         `uvm_info(get_full_name(), $sformatf("WRITE TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
       else
         `uvm_info(get_full_name(), $sformatf("READ TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
+      analysis_port.write(act_trans);
     end
 
     `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);

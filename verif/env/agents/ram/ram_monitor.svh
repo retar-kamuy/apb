@@ -4,8 +4,8 @@
 class ram_monitor extends uvm_monitor;
   `uvm_component_utils(ram_monitor)
 
-  uvm_analysis_port #(ram_transaction) analysis_port;
-  ram_transaction act_trans;
+  uvm_analysis_port #(apb_transaction) analysis_port;
+  apb_transaction act_trans;
   virtual ram_interface vif;
 
   bit enable_check = 0;
@@ -33,9 +33,8 @@ class ram_monitor extends uvm_monitor;
 
   task collect_trans();
     @(vif.monitor_cb.en or vif.monitor_cb.busy);
-    wait (vif.monitor_cb.en && !vif.monitor_cb.busy);
-    if (|vif.monitor_cb.we) begin
-      act_trans.address = vif.slave_cb.addr;
+    if (vif.monitor_cb.en && !vif.monitor_cb.busy) begin
+      act_trans.address = vif.monitor_cb.addr;
       act_trans.command = |vif.monitor_cb.we;
       act_trans.byte_enable = vif.monitor_cb.we;
       act_trans.data = vif.monitor_cb.din;
@@ -47,34 +46,6 @@ class ram_monitor extends uvm_monitor;
   virtual function void check_protocol ();
     // Function to check basic protocol specs
   endfunction
-
-//  task collect_trans();
-//    @(vif.monitor_cb.en or
-//      vif.monitor_cb.we or
-//      vif.monitor_cb.addr or
-//      vif.monitor_cb.din or
-//      vif.monitor_cb.busy or
-//      vif.monitor_cb.dout or
-//      vif.monitor_cb.err
-//    );
-//
-//    if (vif.monitor_cb.en) begin
-//      act_trans.address = vif.slave_cb.addr;
-//      act_trans.command = |vif.monitor_cb.we;
-//      act_trans.byte_enable = vif.monitor_cb.we;
-//
-//      wait(~vif.monitor_cb.busy);
-//
-//      if (|vif.monitor_cb.we)
-//        act_trans.data = vif.monitor_cb.din;
-//      else
-//        act_trans.data = vif.monitor_cb.dout;
-//      act_trans.response_status = vif.monitor_cb.err;
-//
-//      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2string()), UVM_LOW);
-//      // act_trans.print();
-//    end
-//  endtask
 
 endclass
 

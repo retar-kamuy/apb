@@ -1,7 +1,7 @@
 `ifndef RAM_DRIVER_SVH_
 `define RAM_DRIVER_SVH_
 
-class ram_driver extends uvm_driver #(ram_transaction);
+class ram_driver extends uvm_driver #(apb_transaction);
   virtual ram_interface vif;
 
   `uvm_component_utils(ram_driver)
@@ -17,8 +17,8 @@ class ram_driver extends uvm_driver #(ram_transaction);
   endfunction
 
   virtual task run_phase(uvm_phase phase);
-    ram_transaction req;
-    ram_transaction rsp;
+    apb_transaction req;
+    apb_transaction rsp;
 
     reset();
     wait(vif.rst_n);
@@ -34,7 +34,7 @@ class ram_driver extends uvm_driver #(ram_transaction);
     end
   endtask
 
-  task drive(ram_transaction req);
+  task drive(apb_transaction req);
     wait(~vif.master_cb.busy);
     vif.master_cb.en <= 1;
     vif.master_cb.we <= req.byte_enable;
@@ -45,9 +45,9 @@ class ram_driver extends uvm_driver #(ram_transaction);
     @(vif.master_cb);
   endtask
 
-  task response(input ram_transaction req, output ram_transaction rsp);
+  task response(input apb_transaction req, output apb_transaction rsp);
     wait(~vif.master_cb.busy);
-    rsp = ram_transaction::type_id::create("rsp");
+    rsp = apb_transaction::type_id::create("rsp");
     rsp.set_id_info(req);
     rsp.response_status = vif.master_cb.err == 0 ? 1 : -1;
   endtask

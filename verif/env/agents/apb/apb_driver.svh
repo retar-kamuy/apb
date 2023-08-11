@@ -36,7 +36,7 @@ class apb_driver extends uvm_driver #(apb_transaction);
   endtask
 
   task drive(apb_transaction req);
-    wait(vif.slave_cb.psel);
+    wait(vif.slave_cb.psel && vif.monitor_cb.penable);
     repeat(req.delay) @(vif.slave_cb);
 
     vif.slave_cb.prdata <= req.data;
@@ -45,7 +45,7 @@ class apb_driver extends uvm_driver #(apb_transaction);
     @(vif.slave_cb);
 
     `uvm_info(get_full_name(), $sformatf("WAIT FOR PENABLE FROM DUT"), UVM_LOW);
-    wait(vif.monitor_cb.penable);
+    // wait(vif.monitor_cb.penable);@(vif.slave_cb);
     vif.slave_cb.pready <= 0;
     `uvm_info(get_full_name(), $sformatf("PREADY NEGATEASSERT FROM DRIVER"), UVM_LOW);
   endtask

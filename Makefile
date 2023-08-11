@@ -4,7 +4,7 @@ ifeq ($(OS), Windows_NT)
 endif
 RD = rd /q /s
 
-FILTER_EXTENSIONS = v sv
+FILTER_EXTENSIONS = v vh sv svh
 
 SRCDIRS = src verif
 
@@ -27,21 +27,20 @@ list: $(SRCS)
 filelist.f: $(SRCS)
 	echo $(SRCS) | sed -e "s/ /\n/g" > $@
 
+.PHONY: build
 xsim.dir/work.tb_top/xsimk: $(SRCS)
-	xvlog -sv $^ -L uvm $(addprefix --include ,$(INCLUDES))
+	xvlog -sv $(filter %.v %.sv,$^) -L uvm $(addprefix --include ,$(INCLUDES))
 	xelab $(TOP) -L uvm -timescale 1ns/1ps
 
- xsim.dir/work.tb_top/xsimk
+.PHONY: test
+test: xsim.dir/work.tb_top/xsimk
 ifeq ("$(wildcard xsim.covdb"), "xsim.covdb")
 	$(RM) $(@D)
 	mkdir $(@D)
 endif
-	xsim $(notdir $(<D)) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\" -cov_db_name $(notdir $@)
+	xsim $(notdir $(<D)) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\"
 
-build: xsim.dir/work.tb_top/xsimk
-
-test: xsim.covdb/work.tb_top
-
+.PHONY: cover
 cover: xsim.covdb/work.tb_top
 ifeq ("$(wildcard $(REPORT_DIR)"), "$(REPORT_DIR)")
 	$(RM) $(REPORT_DIR)

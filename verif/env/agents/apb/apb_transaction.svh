@@ -2,12 +2,12 @@
 `define APB_TRANSACTION_SVH_
 
 class apb_transaction extends uvm_sequence_item;
-        bit           [63:0]  address;
-        int                   command;
-  rand  bit           [31:0]  data;
-        bit           [3:0]   byte_enable;
-        int                   response_status;
-  rand  bit           [3:0]   delay;              // num of cycles for which pready will be kept off
+  rand  bit [63:0]  address;
+  rand  int         command;
+  rand  bit [31:0]  data;
+  rand  bit [3:0]   byte_enable;
+        int         response_status;
+  rand  bit [3:0]   delay;            // num of cycles for which pready will be kept off
 
   `uvm_object_utils_begin(apb_transaction)
     `uvm_field_int(address          , UVM_DEFAULT)
@@ -30,7 +30,10 @@ class apb_transaction extends uvm_sequence_item;
   endfunction
 
   constraint c1 {
-    data  inside  {[0:32'hFFFF_FFFF]};
+    address     inside  {[0:32'hFFFF_FFFF]};
+    command     inside  {[0:1]};
+    data        inside  {[0:32'hFFFF_FFFF]};
+    byte_enable dist    {0 :/ 50, [1:4'hF] :/ 50};
     delay inside {[0:4]};
   }
 

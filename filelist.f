@@ -1,0 +1,10 @@
+src/apb.sv
+verif/env/ref_model/apb_assertion.sv
+verif/tb/clk_rst_gen.sv
+verif/tb/tb_top.sv
++incdir+verif/env/agents/apb
++incdir+verif/env/agents/ram
++incdir+verif/env/tests
++incdir+verif/env/tests/sequence_lib
++incdir+verif/env/top
++incdir+verif/tb
