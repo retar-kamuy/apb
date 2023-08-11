@@ -24,8 +24,15 @@ all: clean build test cover
 list: $(SRCS)
 	echo $(SRCS)
 
+define F
+	echo +incdir+$(1) | sed -e "s/ /\n/g" >> filelist.f
+
+endef
+
+.PHONY: filelist.f
 filelist.f: $(SRCS)
-	echo $(SRCS) | sed -e "s/ /\n/g" > $@
+	echo $(filter %.v %.sv,$(SRCS)) | sed -e "s/ /\n/g" > $@
+	$(foreach incdir,$(INCLUDES),$(call F,$(incdir)))
 
 .PHONY: build
 xsim.dir/work.tb_top/xsimk: $(SRCS)

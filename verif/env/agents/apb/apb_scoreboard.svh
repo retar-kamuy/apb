@@ -52,7 +52,7 @@ class apb_scoreboard extends uvm_scoreboard;
       in_fifo.get(exp_trans);
       out_fifo.get(act_trans);
       if (!exp_trans.compare(act_trans)) begin
-        `uvm_error(get_full_name(), $sformatf("%s does not match\n%s", exp_trans.sprint(), act_trans.sprint()));
+        `uvm_error(get_full_name(), $sformatf("%s does not match\n%s", exp_trans.sprint(), act_trans.sprint()))
       end
     end
   endtask

@@ -17,7 +17,7 @@ class apb_monitor extends uvm_monitor;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if (!uvm_config_db#(virtual apb_interface)::get(this, "", "apb_if", vif))
-      `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"});
+      `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"})
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -50,7 +50,7 @@ class apb_monitor extends uvm_monitor;
       analysis_port.write(act_trans);
     end
 
-    `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW);
+    `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR"), UVM_LOW)
     // act_trans.print();
   endtask
 

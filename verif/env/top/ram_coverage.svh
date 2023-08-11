@@ -6,7 +6,7 @@ class ram_coverage extends uvm_subscriber #(apb_transaction);
   `uvm_component_utils(ram_coverage)
 
   int           command;
-  bit   [63:0]  address;
+  bit   [31:0]  address;
   bit   [31:0]  data;
   bit   [3:0]   byte_enable;
 
@@ -40,7 +40,7 @@ class ram_coverage extends uvm_subscriber #(apb_transaction);
   endfunction
 
     function void write(apb_transaction t);
-      `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG);
+      `uvm_info(get_full_name(), $sformatf("SUBSCRIBER RECIEVED %s", t.convert2string()), UVM_DEBUG)
 
       command     = t.command;
       address     = t.address;

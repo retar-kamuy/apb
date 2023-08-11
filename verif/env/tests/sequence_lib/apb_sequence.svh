@@ -16,7 +16,7 @@ class apb_sequence extends uvm_sequence;
       $cast(req, ev.get_trigger_data());
       start_item(req);
       assert(req.randomize());
-      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE"), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("RANDOMIZED TRANSACTION FROM SEQUENCE"), UVM_LOW)
       finish_item(req);
     end
   endtask

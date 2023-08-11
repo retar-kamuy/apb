@@ -13,7 +13,7 @@ class ram_driver extends uvm_driver #(apb_transaction);
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_if", vif))
-      `uvm_fatal("NO_VIF",{"virtual interface must be set for: ",get_full_name(),".vif"});
+      `uvm_fatal("NO_VIF",{"virtual interface must be set for: ",get_full_name(),".vif"})
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -27,9 +27,9 @@ class ram_driver extends uvm_driver #(apb_transaction);
     forever begin
       seq_item_port.get_next_item(req);
       drive(req);
-      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM DRIVER"), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM DRIVER"), UVM_LOW)
       response(req, rsp);
-      `uvm_info(get_full_name(), $sformatf("RESPONSE FROM DUT"), UVM_LOW);
+      `uvm_info(get_full_name(), $sformatf("RESPONSE FROM DUT"), UVM_LOW)
       seq_item_port.item_done(rsp);
     end
   endtask

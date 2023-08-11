@@ -2,7 +2,7 @@
 `define APB_TRANSACTION_SVH_
 
 class apb_transaction extends uvm_sequence_item;
-  rand  bit [63:0]  address;
+  rand  bit [31:0]  address;
   rand  int         command;
   rand  bit [31:0]  data;
   rand  bit [3:0]   byte_enable;
@@ -20,9 +20,9 @@ class apb_transaction extends uvm_sequence_item;
 
   function void do_record(uvm_recorder recorder);
     super.do_record(recorder);
-    `uvm_record_field("addr", address);
-    `uvm_record_field("data", data);
-    `uvm_record_field("delay", delay);
+    `uvm_record_field("addr", address)
+    `uvm_record_field("data", data)
+    `uvm_record_field("delay", delay)
   endfunction
 
   function new(string name = "apb_transaction");
