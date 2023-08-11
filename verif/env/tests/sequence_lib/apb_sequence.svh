@@ -1,3 +1,6 @@
+`ifndef APB_SEQUENCE_SVH_
+`define APB_SEQUENCE_SVH_
+
 class apb_sequence extends uvm_sequence;
   `uvm_object_utils(apb_sequence)
 
@@ -22,3 +25,5 @@ class apb_sequence extends uvm_sequence;
   endtask
 
 endclass
+
+`endif  // APB_SEQUENCE_SVH_

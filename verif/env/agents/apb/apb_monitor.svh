@@ -1,3 +1,6 @@
+`ifndef APB_MONITOR_SVH_
+`define APB_MONITOR_SVH_
+
 class apb_monitor extends uvm_monitor;
   `uvm_component_utils(apb_monitor)
 
@@ -38,10 +41,10 @@ class apb_monitor extends uvm_monitor;
 
     if (vif.monitor_cb.psel && vif.monitor_cb.penable && vif.monitor_cb.pready) begin
       act_trans.address = vif.monitor_cb.paddr;
-      act_trans.command = vif.monitor_cb.pwrite;
+      act_trans.command = {31'(0), vif.monitor_cb.pwrite};
       act_trans.byte_enable = 4'(vif.monitor_cb.pstrb);
       act_trans.data = vif.monitor_cb.pwdata;
-      act_trans.response_status = vif.monitor_cb.pslverr;
+      act_trans.response_status = {31'(0), vif.monitor_cb.pslverr};
 
       if(act_trans.command == 1)
         `uvm_info(get_full_name(), $sformatf("WRITE TRANSACTION FROM DUT: %p", act_trans.sprint()), UVM_HIGH)
@@ -55,3 +58,5 @@ class apb_monitor extends uvm_monitor;
   endtask
 
 endclass
+
+`endif  // APB_MONITOR_SVH_

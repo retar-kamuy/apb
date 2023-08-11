@@ -1,3 +1,6 @@
+`ifndef APB_TEST_SVH_
+`define APB_TEST_SVH_
+
 class apb_base_test extends uvm_test;
   `uvm_component_utils(apb_base_test)
 
@@ -27,3 +30,5 @@ class apb_base_test extends uvm_test;
   endtask
 
 endclass
+
+`endif  // APB_TEST_SVH_

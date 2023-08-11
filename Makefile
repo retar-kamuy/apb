@@ -13,7 +13,7 @@ FIND_FILES = $(foreach ext,$(FILTER_EXTENSIONS),$(shell find $(srcdir) -name "*.
 SRCS = $(foreach srcdir,$(SRCDIRS),$(FIND_FILES))
 
 # SRCS = verif/tb/tb_top.sv verif/tb/clk_rst_gen.sv src/apb.sv verif/env/ref_model/apb_assertion.sv
-INCLUDES = verif/tests verif/tests/sequence_lib verif/env verif/env/agents/ram verif/env/agents/apb
+INCDIRS = verif/tests verif/tests/sequence_lib verif/env verif/env/agents/ram verif/env/agents/apb
 TOP = tb_top
 
 COVDIR = xsim.covdb
@@ -25,18 +25,18 @@ list: $(SRCS)
 	echo $(SRCS)
 
 define F
-	echo +incdir+$(1) | sed -e "s/ /\n/g" >> filelist.f
+	echo +incdir+$(1) >> filelist.f
 
 endef
 
 .PHONY: filelist.f
 filelist.f: $(SRCS)
 	echo $(filter %.v %.sv,$(SRCS)) | sed -e "s/ /\n/g" > $@
-	$(foreach incdir,$(INCLUDES),$(call F,$(incdir)))
+	$(foreach incdir,$(INCDIRS),$(call F,$(incdir)))
 
 .PHONY: build
 xsim.dir/work.tb_top/xsimk: $(SRCS)
-	xvlog -sv $(filter %.v %.sv,$^) -L uvm $(addprefix --include ,$(INCLUDES))
+	xvlog -sv $(filter %.v %.sv,$^) -L uvm $(addprefix --include ,$(INCDIRS))
 	xelab $(TOP) -L uvm -timescale 1ns/1ps
 
 .PHONY: test

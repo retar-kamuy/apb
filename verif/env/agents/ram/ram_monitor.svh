@@ -19,7 +19,7 @@ class ram_monitor extends uvm_monitor;
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     if (!uvm_config_db#(virtual ram_interface)::get(this, "", "ram_if", vif))
-      `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"});
+      `uvm_fatal("NOVIF", {"virtual interface must be set for: ", get_full_name(), ".vif"})
   endfunction
 
   virtual task run_phase(uvm_phase phase);
@@ -35,11 +35,11 @@ class ram_monitor extends uvm_monitor;
     @(vif.monitor_cb.en or vif.monitor_cb.busy);
     if (vif.monitor_cb.en && !vif.monitor_cb.busy) begin
       act_trans.address = vif.monitor_cb.addr;
-      act_trans.command = |vif.monitor_cb.we;
+      act_trans.command = {31'(0), |vif.monitor_cb.we};
       act_trans.byte_enable = vif.monitor_cb.we;
       act_trans.data = vif.monitor_cb.din;
-      act_trans.response_status = vif.monitor_cb.err;
-      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2string()), UVM_LOW);
+      act_trans.response_status = {31'(0), vif.monitor_cb.err};
+      `uvm_info(get_full_name(), $sformatf("TRANSACTION FROM MONITOR: %s", act_trans.convert2string()), UVM_LOW)
     end
   endtask
 

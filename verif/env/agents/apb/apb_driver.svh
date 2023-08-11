@@ -1,3 +1,6 @@
+`ifndef APB_DRIVER_SVH_
+`define APB_DRIVER_SVH_
+
 class apb_driver extends uvm_driver #(apb_transaction);
   virtual apb_interface vif;
   int unsigned slv_memory [bit [31:0]];
@@ -51,3 +54,5 @@ class apb_driver extends uvm_driver #(apb_transaction);
   endtask
 
 endclass
+
+`endif  // APB_DRIVER_SVH_

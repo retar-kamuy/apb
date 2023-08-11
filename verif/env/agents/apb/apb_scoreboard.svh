@@ -1,3 +1,6 @@
+`ifndef APB_SCOREBOARD_SVH_
+`define APB_SCOREBOARD_SVH_
+
 class apb_scoreboard extends uvm_scoreboard;
   `uvm_component_utils(apb_scoreboard)
 
@@ -58,3 +61,5 @@ class apb_scoreboard extends uvm_scoreboard;
   endtask
 
 endclass
+
+`endif  // APB_SCOREBOARD_SVH_
