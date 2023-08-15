@@ -35,34 +35,39 @@ module apb #(
   assign pprot = 3'd0;
   assign pnse = 1'd0;
 
-  logic [DATA_WIDTH/8-1:0] pipeline_inst;
-  logic [DATA_WIDTH-1:0] pipeline_data;
-  logic [ADDR_WIDTH-1:0] pipeline_addr;
+  logic [DATA_WIDTH/8-1:0] pipeline_pwrite;
+  logic [DATA_WIDTH-1:0] pipeline_pwdata;
+  logic [ADDR_WIDTH-1:0] pipeline_paddr;
+  logic [DATA_WIDTH/8-1:0] pipeline_pstrb;
   always_ff @(posedge pclk or negedge presetn)
     if (~presetn) begin
-      pipeline_inst <= (DATA_WIDTH/8)'(1'd0);
-      pipeline_data <= DATA_WIDTH'(1'd0);
-      pipeline_addr <= ADDR_WIDTH'(1'd0);
+      pipeline_pwrite <= (DATA_WIDTH/8)'(1'd0);
+      pipeline_pwdata <= DATA_WIDTH'(1'd0);
+      pipeline_paddr <= ADDR_WIDTH'(1'd0);
+      pipeline_pstrb <= (DATA_WIDTH/8)'(1'd0);
     end else
       case (state)
         IDLE: begin
-          pipeline_inst <= we;
-          pipeline_data <= din;
-          pipeline_addr <= addr;
+          pipeline_pwrite <= we;
+          pipeline_pwdata <= din;
+          pipeline_paddr <= addr;
+          pipeline_pstrb <= we;
         end
         SETUP: begin
-          pipeline_inst <= (DATA_WIDTH/8)'(1'd0);
-          pipeline_data <= DATA_WIDTH'(1'd0);
-          pipeline_addr <= ADDR_WIDTH'(1'd0);
+          pipeline_pwrite <= (DATA_WIDTH/8)'(1'd0);
+          pipeline_pwdata <= DATA_WIDTH'(1'd0);
+          pipeline_paddr <= ADDR_WIDTH'(1'd0);
+          pipeline_pstrb <= (DATA_WIDTH/8)'(1'd0);
         end
         ACCESS: begin
-          pipeline_data <= DATA_WIDTH'(1'd0);
-          pipeline_addr <= ADDR_WIDTH'(1'd0);
+          pipeline_pwdata <= DATA_WIDTH'(1'd0);
+          pipeline_paddr <= ADDR_WIDTH'(1'd0);
         end
         default: begin
-          pipeline_inst <= pipeline_inst;
-          pipeline_data <= pipeline_data;
-          pipeline_addr <= pipeline_addr;
+          pipeline_pwrite <= pipeline_pwrite;
+          pipeline_pwdata <= pipeline_pwdata;
+          pipeline_paddr <= pipeline_paddr;
+          pipeline_pstrb <= pipeline_pstrb;
         end
       endcase
 
@@ -84,11 +89,11 @@ module apb #(
           pstrb <= (DATA_WIDTH/8)'(1'd0);
         end
         SETUP: begin
-          paddr <= pipeline_addr;
-          pwrite <= |pipeline_inst;
+          paddr <= pipeline_paddr;
+          pwrite <= |pipeline_pwrite;
           psel <= 1'd1;
-          pwdata <= pipeline_data;
-          pstrb <= pipeline_inst;
+          pwdata <= pipeline_pwdata;
+          pstrb <= pipeline_pstrb;
         end
         ACCESS: begin
           if (pready) begin
@@ -114,7 +119,7 @@ module apb #(
     if (~presetn)
       dout <= DATA_WIDTH'(1'd0);
     else
-      if (~(|pipeline_inst))
+      if (~(|pipeline_pwrite))
         if (penable & pready)
           dout <= prdata;
 

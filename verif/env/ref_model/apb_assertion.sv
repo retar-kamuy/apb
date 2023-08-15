@@ -1,35 +1,61 @@
+`ifndef APB_ASSERTION_SV_
+`define APB_ASSERTION_SV_
+
 class TransactionQueue;
   localparam DATA_WIDTH = 32;
 
+  string _name;
   int len;
+  int _addr;
+  int _data;
 
   int addr_queue[$];
   bit [DATA_WIDTH/8-1:0] we_queue[$];
   int data_queue[$];
 
-  function new ();
+  function new (string name);
+    this._name = name;
     this.len = 0;
+    this._addr = 0;
+    this._data = 0;
   endfunction
 
   function int get_len ();
     return this.len;
   endfunction
 
-  function void push_back(int addr, int data);
+  function void set_addr(int addr);
+    this._addr = addr;
+  endfunction
+
+  function void set_data(int data);
+    this._data = data;
+  endfunction
+
+  function void set_data_and_push(int data);
+    this._data = data;
+    this.push(this._addr, this._data);
+  endfunction
+
+  function void push(int addr, int data);
     this.addr_queue.push_back(addr);
     this.data_queue.push_back(data);
     this.len++;
+    $info("%s.push: addr=%x, data=%x (len=%d)", this._name, this.len, addr, data);
   endfunction
 
-  function void pop_front(output int addr, output int data);
+  function void pop(output int addr, output int data);
+    if (this.len === 0)
+      $fatal(1, "%s.pop: FIFO IS EMPTY", this._name);
     addr = this.addr_queue.pop_front();
     data = this.data_queue.pop_front();
     this.len--;
+    $info("%s.pop: addr=%x, data=%x (len=%d)", this._name, this.len, addr, data);
   endfunction
 
 endclass
 
-module apb_assertions #(
+module apb_assertion #(
   parameter ADDR_WIDTH = 32,
   parameter DATA_WIDTH = 32
 ) (
@@ -57,64 +83,109 @@ module apb_assertions #(
   input [DATA_WIDTH-1:0]    dout,
   input                     err 
 );
+  typedef enum int {
+    IDLE = 0,
+    TRANSFER = 1,
+    ACCESS = 2,
+    DONE = 3
+  } state;
 
   TransactionQueue winfo;
   TransactionQueue rinfo;
+  TransactionQueue wout_fifo;
+  TransactionQueue rout_fifo;
   int exp_addr;
   int exp_data;
+  int act_addr;
+  int act_data;
 
   initial begin
-    winfo = new;
-    rinfo = new;
+    winfo = new("winfo");
+    rinfo = new("rinfo");
+    wout_fifo = new("wout_fifo");
+    rout_fifo = new("rout_fifo");
   end
 
-  bit winfo_seen, rinfo_seen;
-  assign winfo_seen = penable & psel & pwrite;
-  assign rinfo_seen = penable & psel & ~pwrite;
+  state winfo_state = IDLE;
+  always @(posedge pclk) begin
+    case (winfo_state)
+      IDLE:
+        if (en && !busy && (|we)) begin
+          winfo_state = TRANSFER;
+          winfo.push(addr, din);
+        end
+      TRANSFER:
+        if (penable && psel && pwrite)
+          winfo_state = ACCESS;
+      ACCESS:
+        if (pready && penable && psel && pwrite) begin
+          winfo_state = DONE;
+          wout_fifo.push(paddr, pwdata);
+        end
+      DONE:
+        if (!busy) begin
+          if (en && (|we))
+            winfo_state = TRANSFER;
+          else
+            winfo_state = IDLE;
 
-  bit winfo_done, rinfo_done;
-  initial begin
-    winfo_done = 0;
-    rinfo_done = 0;
-    forever begin
-      @(posedge winfo_seen or posedge rinfo_seen);
-        winfo_done = 0;
-        rinfo_done = 0;
-      if (winfo_seen) begin
-        @(negedge pready);
-        winfo_done = 1;
-      end else if (rinfo_seen) begin
-        @(negedge pready);
-        rinfo_done = 1;
-      end
-    end
+          winfo.pop(exp_addr, exp_data);
+          wout_fifo.pop(act_addr, act_data);
+        end
+    endcase
   end
 
-  initial
-    forever begin
-      @(winfo_done);
-      wait(winfo_done);
-        winfo.pop_front(exp_addr, exp_data);
-    end
+  state rinfo_state = IDLE;
+  always @(posedge pclk) begin
+    case (rinfo_state)
+      IDLE:
+        if (en && !busy && !(|we)) begin
+          rinfo_state = TRANSFER;
+          rinfo.set_addr(addr);
+        end
+      TRANSFER:
+        if (penable && psel && !pwrite)
+          rinfo_state = ACCESS;
+      ACCESS:
+        if (pready && penable && psel && !pwrite) begin
+          rinfo_state = DONE;
+          rinfo.set_data_and_push(prdata);
+          rout_fifo.set_addr(paddr);
+        end
+      DONE:
+        if (!busy) begin
+          if (en && !(|we))
+            rinfo_state = TRANSFER;
+          else
+            rinfo_state = IDLE;
 
-  initial
-    forever begin
-      @(rinfo_done);
-      wait (rinfo_done);
-      rinfo.pop_front(exp_addr, exp_data);
-    end
+          rout_fifo.set_data_and_push(dout);
 
-  initial
-    forever begin
-      @(en or busy);
-      wait (en && (!busy));
-      if (|we)
-        winfo.push_back(addr, din);
-      else begin
-        @(posedge pready)
-        rinfo.push_back(addr, prdata);
-      end
-    end
+          rinfo.pop(exp_addr, exp_data);
+          rout_fifo.pop(act_addr, act_data);
+        end
+    endcase
+  end
+
+  prop_paddr_stable: assert property (
+    @(posedge pclk) disable iff (!presetn)
+      penable |-> $stable(paddr)
+  ) else $fatal(1, "prop_paddr_stable : NG : paddr is not stable");
+
+  prop_pwrite_stable: assert property (
+    @(posedge pclk) disable iff (!presetn)
+      penable |-> $stable(pwrite)
+  ) else $fatal(1, "prop_pwrite_stable : NG : pwrite is not stable");
+
+  prop_pwdata_stable: assert property (
+    @(posedge pclk) disable iff (!presetn)
+      penable |-> $stable(pwdata)
+  ) else $fatal(1, "prop_pwdata_stable : NG : pwdata is not stable");
+
+  prop_pstrb_stable: assert property (
+    @(posedge pclk) disable iff (!presetn)
+      penable |-> $stable(pstrb)
+  ) else $fatal(1, "prop_pstrb_stable : NG : pstrb is not stable");
 
   prop_transfer_done_is_pulse: assert property (
     @(posedge pclk) disable iff (!presetn)
@@ -123,22 +194,24 @@ module apb_assertions #(
 
   prop_write_trans: assert property (
     @(posedge pclk) disable iff (!presetn)
-    winfo_done && $fell(pwrite) |-> (exp_addr === paddr) && (exp_data === pwdata)
+    $past(winfo_state === DONE) && $changed(winfo_state) |-> (exp_addr === act_addr) && (exp_data === act_data)
   ) else begin
-    if (exp_addr !== paddr)
-      $fatal(1, "prop_write_trans : NG : addr=%x, exp=%x", paddr, exp_addr);
+    if (exp_addr !== act_addr)
+      $fatal(1, "prop_write_trans : NG : act_addr=%x, exp=%x", act_addr, exp_addr);
     else
-      $fatal(1, "prop_write_trans : NG : data=%x, exp=%x", pwdata, exp_data);
+      $fatal(1, "prop_write_trans : NG : act_data=%x, exp=%x", act_data, exp_data);
   end
 
   prop_read_trans: assert property (
     @(posedge pclk) disable iff (!presetn)
-    rinfo_done && $fell(busy) |-> (exp_addr === paddr) && (exp_data === dout)
+    $past(rinfo_state === DONE) && $changed(rinfo_state) |-> (exp_addr === act_addr) && (exp_data === act_data)
   ) else begin
-    if (exp_addr !== paddr)
-      $fatal(1, "prop_read_trans : NG : addr=%x, exp=%x", paddr, exp_addr);
+    if (exp_addr !== act_addr)
+      $fatal(1, "prop_read_trans : NG : act_addr=%x, exp=%x", act_addr, exp_addr);
     else
-      $fatal(1, "prop_read_trans : NG : data=%x, exp=%x", dout, exp_data);
+      $fatal(1, "prop_read_trans : NG : act_data=%x, exp=%x", act_data, exp_data);
   end
 
 endmodule
+
+`endif  // APB_ASSERTION_SV_

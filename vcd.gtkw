@@ -1,20 +1,17 @@
 [*]
-[*] GTKWave Analyzer v3.3.115 (w)1999-2023 BSI
-[*] Mon Jul 17 13:35:40 2023
+[*] GTKWave Analyzer v3.3.111 (w)1999-2020 BSI
+[*] Tue Aug 15 03:02:47 2023
 [*]
-[dumpfile] "/mnt/c/Users/Hoshi/Repositories/apb/wave.vcd"
-[dumpfile_mtime] "Mon Jul 17 13:35:10 2023"
-[dumpfile_size] 442276
-[savefile] "/mnt/c/Users/Hoshi/Repositories/apb/vcd.gtkw"
+[dumpfile] "(null)"
+[savefile] "/home/redhat/Repositories/apb/vcd.gtkw"
 [timestart] 0
-[size] 1908 975
+[size] 1366 689
 [pos] -1 -1
-*-15.456105 109900 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-22.360756 473000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] tb_top.
 [treeopen] tb_top.apb_if.
 [treeopen] tb_top.u_apb.
-[treeopen] tb_top.u_apb.apb_sva_inst.
-[sst_width] 214
+[sst_width] 273
 [signals_width] 285
 [sst_expanded] 1
 [sst_vpaned_height] 283
@@ -78,46 +75,22 @@ tb_top.apb_if.pslverr
 tb_top.apb_if.pnse
 @200
 -apb_assertion
-@420
-tb_top.u_apb.apb_sva_inst.w_trans_num[31:0]
-tb_top.u_apb.apb_sva_inst.r_trans_num[31:0]
-@28
-tb_top.u_apb.apb_sva_inst.w_seen
-tb_top.u_apb.apb_sva_inst.r_seen
-tb_top.u_apb.apb_sva_inst.trans_done
-@22
-tb_top.u_apb.apb_sva_inst.symb_paddr[31:0]
-@29
-tb_top.u_apb.apb_sva_inst.symb_command
-@22
-tb_top.u_apb.apb_sva_inst.symb_pwdata[31:0]
-tb_top.u_apb.apb_sva_inst.symb_dout[31:0]
-tb_top.u_apb.apb_sva_inst.addr[31:0]
-tb_top.u_apb.apb_sva_inst.din[31:0]
-tb_top.u_apb.apb_sva_inst.dout[31:0]
-tb_top.u_apb.apb_sva_inst.paddr[31:0]
-@28
-tb_top.u_apb.apb_sva_inst.penable
-@22
-tb_top.u_apb.apb_sva_inst.prdata[31:0]
-@28
-tb_top.u_apb.apb_sva_inst.pready
-tb_top.u_apb.apb_sva_inst.psel
-@22
-tb_top.u_apb.apb_sva_inst.pstrb[3:0]
-tb_top.u_apb.apb_sva_inst.pwdata[31:0]
-@200
 -apb
 @28
 tb_top.u_apb.presetn
 tb_top.u_apb.pclk
-@2028
-^1 /mnt/c/Users/Hoshi/Repositories/apb/vcd_filter_state.gtkw
-tb_top.u_apb.state[1:0]
-@28
-tb_top.u_apb.pipeline_inst[3:0]
+@23
+tb_top.u_apb.u_apb_assertion.winfo_state[31:0]
 @22
-tb_top.u_apb.pipeline_addr[31:0]
-tb_top.u_apb.pipeline_data[31:0]
+tb_top.u_apb.u_apb_assertion.rinfo_state[31:0]
+tb_top.u_apb.u_apb_assertion.act_addr[31:0]
+[color] 1
+tb_top.u_apb.u_apb_assertion.exp_addr[31:0]
+tb_top.u_apb.u_apb_assertion.act_data[31:0]
+[color] 1
+tb_top.u_apb.u_apb_assertion.exp_data[31:0]
+@2028
+^1 /home/redhat/Repositories/apb/vcd_filter_state.gtkw
+tb_top.u_apb.state[1:0]
 [pattern_trace] 1
 [pattern_trace] 0

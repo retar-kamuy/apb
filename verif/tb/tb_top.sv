@@ -59,7 +59,7 @@ module tb_top;
 
 endmodule
 
-bind tb_top.u_apb apb_assertions apb_sva_inst (
+bind tb_top.u_apb apb_assertion u_apb_assertion (
   pclk,
   presetn,
   paddr,

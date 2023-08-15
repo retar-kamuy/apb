@@ -35,9 +35,11 @@ filelist.f: $(SRCS)
 	$(foreach incdir,$(INCDIRS),$(call F,$(incdir)))
 
 .PHONY: build
+build: xsim.dir/work.tb_top/xsimk
+
 xsim.dir/work.tb_top/xsimk: $(SRCS)
 	xvlog -sv $(filter %.v %.sv,$^) -L uvm $(addprefix --include ,$(INCDIRS))
-	xelab $(TOP) -L uvm -timescale 1ns/1ps
+	xelab $(TOP) -L uvm -timescale 1ns/1ps -cc_type bcesfxt
 
 .PHONY: test
 test: xsim.dir/work.tb_top/xsimk
@@ -59,7 +61,7 @@ clean:
 ifeq ("$(wildcard xsim.dir"), "xsim.dir")
 	$(RM) xsim.dir
 endif
-	$(RM) xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
+	$(RM) xcrg_func_cov_report xsim.codeCov xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
 	$(RM) xsim_*.backup.* xsim.jou *.wdb
 	$(RM) *.log *.vcd
 	$(RM) filelist.f
