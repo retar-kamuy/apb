@@ -35,33 +35,35 @@ filelist.f: $(SRCS)
 	$(foreach incdir,$(INCDIRS),$(call F,$(incdir)))
 
 .PHONY: build
-build: xsim.dir/work.tb_top/xsimk
+build: xsim.dir/work.tb_top
 
-xsim.dir/work.tb_top/xsimk: $(SRCS)
+xsim.dir/work.tb_top: $(SRCS)
 	xvlog -sv $(filter %.v %.sv,$^) -L uvm $(addprefix --include ,$(INCDIRS))
-	xelab $(TOP) -L uvm -timescale 1ns/1ps -cc_type bcesfxt
+	xelab $(notdir $@) -L uvm -timescale 1ns/1ps -cc_type sbct
 
 .PHONY: test
-test: xsim.dir/work.tb_top/xsimk
+test: xsim.log
+
+xsim.log: xsim.dir/work.tb_top
 ifeq ("$(wildcard xsim.covdb"), "xsim.covdb")
 	$(RM) $(@D)
 	mkdir $(@D)
 endif
-	xsim $(notdir $(<D)) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\"
+	xsim $(notdir $<) -R -testplusarg \"UVM_VERBOSITY=UVM_LOW\" -log $@
 
 .PHONY: cover
-cover: xsim.covdb/work.tb_top
+cover:
 ifeq ("$(wildcard $(REPORT_DIR)"), "$(REPORT_DIR)")
 	$(RM) $(REPORT_DIR)
 endif
 	mkdir -p $(REPORT_DIR)
-	xcrg -dir $(COVDIR) -report_dir $(REPORT_DIR)/cov -report_format html
+	xcrg -cc_db work.tb_top -dir $(COVDIR) -report_dir $(REPORT_DIR)/xcrg_func_cov_report -cc_report $(REPORT_DIR)/xcrg_code_cov_report -report_format html
 
 clean:
 ifeq ("$(wildcard xsim.dir"), "xsim.dir")
 	$(RM) xsim.dir
 endif
-	$(RM) xcrg_func_cov_report xsim.codeCov xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
+	$(RM) xsim.codeCov xsim.covdb xsim.dir xsim.out xvlog.pb xelab.pb
 	$(RM) xsim_*.backup.* xsim.jou *.wdb
 	$(RM) *.log *.vcd
 	$(RM) filelist.f

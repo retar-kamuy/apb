@@ -47,12 +47,6 @@ module apb #(
       pipeline_pstrb <= (DATA_WIDTH/8)'(1'd0);
     end else
       case (state)
-        IDLE: begin
-          pipeline_pwrite <= we;
-          pipeline_pwdata <= din;
-          pipeline_paddr <= addr;
-          pipeline_pstrb <= we;
-        end
         SETUP: begin
           pipeline_pwrite <= (DATA_WIDTH/8)'(1'd0);
           pipeline_pwdata <= DATA_WIDTH'(1'd0);
@@ -63,11 +57,11 @@ module apb #(
           pipeline_pwdata <= DATA_WIDTH'(1'd0);
           pipeline_paddr <= ADDR_WIDTH'(1'd0);
         end
-        default: begin
-          pipeline_pwrite <= pipeline_pwrite;
-          pipeline_pwdata <= pipeline_pwdata;
-          pipeline_paddr <= pipeline_paddr;
-          pipeline_pstrb <= pipeline_pstrb;
+        default: begin  // IDLE
+          pipeline_pwrite <= we;
+          pipeline_pwdata <= din;
+          pipeline_paddr <= addr;
+          pipeline_pstrb <= we;
         end
       endcase
 
@@ -81,13 +75,6 @@ module apb #(
       pstrb <= (DATA_WIDTH/8)'(1'd0);
     end else
       case (state)
-        IDLE: begin
-          paddr <= ADDR_WIDTH'(1'd0);
-          pwrite <= 1'd0;
-          psel <= 1'd0;
-          penable <= 1'd0;
-          pstrb <= (DATA_WIDTH/8)'(1'd0);
-        end
         SETUP: begin
           paddr <= pipeline_paddr;
           pwrite <= |pipeline_pwrite;
@@ -105,13 +92,12 @@ module apb #(
             penable <= 1'd1;
           end
         end
-        default: begin
-          paddr <= paddr;
-          pwrite <= pwrite;
-          psel <= psel;
-          penable <= penable;
-          pwdata <= pwdata;
-          pstrb <= pstrb;
+        default: begin  // IDLE
+          paddr <= ADDR_WIDTH'(1'd0);
+          pwrite <= 1'd0;
+          psel <= 1'd0;
+          penable <= 1'd0;
+          pstrb <= (DATA_WIDTH/8)'(1'd0);
         end
       endcase
 
